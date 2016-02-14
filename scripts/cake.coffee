@@ -48,11 +48,11 @@ spacelaunch = [
 feelings_on_government = [
   "Me personally, I'm an antichrist. \n Anarchist, whatever.",
   "Tyranny in government is in the positive, freedom in the negative.\n Thanks for asking.",
-  "#{res.message.text}?? Government?!\n Barricades people! Bar the doors. "
+  "Government?? GOVERNMENT??!\n Barricades people! Bar the doors. "
 ]
 
 feelings_on_coffee = [
-  "#{res.message.text}? Make mine a breve, extra hot.",
+  "Breve, please, extra hot.",
   "I'll take two. Thanks.",
   "You're an addict, man.",
   "Well, I like my coffee like I like my women."
