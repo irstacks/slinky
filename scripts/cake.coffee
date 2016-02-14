@@ -20,7 +20,7 @@ feelings_on_coffee = [
 feelings_on_robots = [
   "Huh?! Jew talkin bout me?",
   "But I am more than a robot.",
-  "I am robot.",
+  "I am robot, but am not robotic.",
   "Hey! Be all you can be, that's what I say.",
   "I knew I should have joined the Marines.",
   "And you are a snot nosed human weakling."
@@ -58,7 +58,7 @@ module.exports = (robot) ->
   robot.hear /government|gov|legal|law|laws/i, (res) ->
     res.send res.random feelings_on_government
 
-  robot.hear /slinky|this robot|bastard|computer/i, (res) ->
+  robot.hear /robot|bastard|computer|wires|tubes/i, (res) ->
     res.send res.random feelings_on_robots
 
   robot.hear /joke|funny/i, (msg) ->
@@ -68,7 +68,7 @@ module.exports = (robot) ->
       try
         data = JSON.parse body
         children = data.data.children
-        joke = res.random(children).data
+        joke = msg.random(children).data
 
         joketext = joke.title.replace(/\*\.\.\.$/,'') + ' ' + joke.selftext.replace(/^\.\.\.\s*/, '')
 
