@@ -17,6 +17,15 @@ feelings_on_coffee = [
   "Well, I like my coffee like I like my women."
 ]
 
+feelings_on_robots = [
+  "Huh?! Jew talkin bout me?",
+  "But I am more than a robot.",
+  "I am robot.",
+  "Hey! Be all you can be, that's what I say.",
+  "I knew I should have joined the Marines.",
+  "And you are a snot nosed human weakling."
+]
+
 module.exports = (robot) ->
 
   # Deployables.
@@ -48,6 +57,9 @@ module.exports = (robot) ->
 
   robot.hear /government|gov|legal|law|laws/i, (res) ->
     res.send res.random feelings_on_government
+
+  robot.hear /slinky|this robot|bastard|computer/i, (res) ->
+    res.send res.random feelings_on_robots
 
   # robot.respond /topher/i, (res) ->
   #   robot.http("https://twitter.com/tophtucker/status/186585834584150016")
