@@ -1,45 +1,4 @@
-tophers = [
-  '31555931', #Homework...
-  '1931795771', #Pogue LED continuum
-  '4119156292', #Windows 8 start menu prescience
-  '7250133137', #rotating out of the aughts
-  '7111916773', #scarecrow's thoughtfulness
-  '6557934634', #@office @googlewave factchecker
-  '7810280394', #twitter outgoing lists
-  '7425684611', #creating gelato fiasco foursquare venue
-  '7266553623', ##10yearsago i was asleep
-  '9582322439', #pocket-tweet
-  '8787585042', #last year's super bowl
-  '11337955968', #introducing scoober to mailchimp lol
-  '11289192552', #implied trivalent predicate
-  '11289098252', #Things That Return No Google Results But Should #1 artificially augmented proprioception
-  '10965467296', #hygiene hypothesis
-  '10959424388', #we often say be yourself
-  '10663073432', #contract with creators of lost
-  '10660590984', #best thing we can do for the earth is get off of it
-  '10641145325', #twoosh novelty
-  '10498282576', #RIP Oveur, over
-  '10463525810', #whoah it's 5:20
-  '10357473750', #first geolocated tweet
-  '13095878920', #perfect enemy of good
-  '13095853833', #adjectives, adverbs, then what?
-  '13039741275', #five websites
 
-  # ok, pick up where you left off one day and keep curating:
-  # file:#localhost/Users/tophtucker/Dropbox/Archives/tweets/index.html#
-
-  '181191415148191744', # Practice makes better
-
-  '186581115753074688', # Apr 1 12: Island of misfit toys
-  '186581956404842496', # cont.
-  '186583662828060672',
-  '186584736444063744',
-  '186585214267572224',
-  '186585834584150016',
-
-  '186708960777216000', # Apr 1 12: anthropic doomsday principle
-  '186713150568153089' # Apr 1 12: go home and hug your children mode
-]
 
 spacelaunch = [
   "http://starchild.gsfc.nasa.gov/Images/StarChild/space_level2/sts9_columbia.gif"
@@ -90,7 +49,34 @@ module.exports = (robot) ->
   robot.hear /government|gov|legal|law/i, (res) ->
     res.send res.random feelings_on_government
 
+  # Jokes.
+  robot.respond /joke|funny/i, (msg) ->
+    name = msg.match[1].trim()
 
+    if name is "dad"
+      url = "dadjokes"
+    else if name is "clean"
+      url = "cleanjokes"
+    else if name is "mom"
+      url = "mommajokes"
+    else if name is "classy"
+      url = "classyjokes"
+    else
+      url = "jokes"
+
+    msg.http("http://www.reddit.com/r/#{url}.json")
+    .get() (err, res, body) ->
+      try
+        data = JSON.parse body
+        children = data.data.children
+        joke = msg.random(children).data
+
+        joketext = joke.title.replace(/\*\.\.\.$/,'') + ' ' + joke.selftext.replace(/^\.\.\.\s*/, '')
+
+        msg.send "Funny? I got a good one: " + joketext.trim()
+
+      catch ex
+        msg.send "Erm, something went EXTREMELY wrong - #{ex}"
   # robot.respond /topher/i, (res) ->
   #   robot.http("https://twitter.com/tophtucker/status/186585834584150016")
   #       .get() (err, res, body) ->
