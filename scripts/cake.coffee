@@ -35,7 +35,7 @@ module.exports = (robot) ->
     res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
 
   # Slow.
-  robot.respond /you are a little slow/, (res) ->
+  robot.respond /you are a little slow/i, (res) ->
     setTimeout () ->
       res.send "Who you calling 'slow'?"
     , 60 * 1000
@@ -46,7 +46,7 @@ module.exports = (robot) ->
   robot.hear /bug|bugs/i, (res) ->
     res.send "Bugs? Haha, suckas!"
 
-  robot.hear /government|gov|legal|law/i, (res) ->
+  robot.hear /government|gov|legal|law|laws/i, (res) ->
     res.send res.random feelings_on_government
 
   # robot.respond /topher/i, (res) ->
