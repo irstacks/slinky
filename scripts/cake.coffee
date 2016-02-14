@@ -77,13 +77,14 @@ module.exports = (robot) ->
   #         res.send "res: #{res} \n body: #{body}"
     # res.send res.random tophers
 
-    robot.respond /topher/i, (res) ->
+  robot.hear /topher/i, (res) ->
+    # robot.respond /topher/i, (res) ->
     # Configures the url of a remote server
-       msg.http('https://twitter.com/tophtucker/status/186585834584150016')
-           # and makes an http get call
-           .get() (error, response, body) ->
-               # passes back the complete reponse
-               msg.send body
+     res.http('https://twitter.com/tophtucker/status/186585834584150016')
+         # and makes an http get call
+         .get() (error, response, body) ->
+             # passes back the complete reponse
+             res.send body
 
   # robot.respond /httper/i, (res) ->
 
