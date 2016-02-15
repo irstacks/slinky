@@ -17,7 +17,7 @@
 #   gkoo
 #
 
-Twit = require "twit"
+Twit = require "~/hubot-slack/node_modules/twit"
 
 config =
   consumer_key: process.env.HUBOT_TWITTER_CONSUMER_KEY
