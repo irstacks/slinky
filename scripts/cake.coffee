@@ -78,14 +78,8 @@ feelings_on_drinks = [
   \nHowever, since I'm not napping, I want you to know that I am fully down for drinks."
 ]
 
-play_things = [
-  "Mind games. This is one.",
-  ""
-]
-
-feelings_on_computer_languages = [
-
-]
+enterReplies = ['Hi','Lock and loaded', 'Target Acquired', 'Firing', 'Hello friend.', 'Gotcha', 'I see you']
+leaveReplies = ['Are you still there?', 'Target lost', 'Searching']
 
 module.exports = (robot) ->
 
@@ -105,26 +99,10 @@ module.exports = (robot) ->
     res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
 
   # Slow.
-  robot.respond /you are a little slow/i, (res) ->
+  robot.respond /you are a little slow|you're a little slow/i, (res) ->
     setTimeout () ->
       res.send "Who you calling 'slow'?"
     , 60 * 1000
-
-  robot.respond /play with me/i, (msg) ->
-    url = "riddles"
-    msg.http("http://www.reddit.com/r/#{url}.json")
-    .get() (err, res, body) ->
-      try
-        data = JSON.parse body
-        children = data.data.children
-        joke = msg.random(children).data
-
-        joketext = joke.title.replace(/\*\.\.\.$/,'') + ' ' + joke.selftext.replace(/^\.\.\.\s*/, '')
-
-        msg.send "Alright. It goes like this:\n" + joketext.trim()
-
-      catch ex
-        msg.send "Erm, something went EXTREMELY wrong - #{ex}"
 
   robot.hear /coffee|espresso|latte/i, (res) ->
     res.send res.random feelings_on_coffee
@@ -159,6 +137,39 @@ module.exports = (robot) ->
   robot.hear /drink|drinks/i, (res) ->
     res.send res.random feelings_on_drinks
 
+  robot.hear /java|ruby|css|scss|python|html|angular|js|javascript/i, (res) ->
+    feelings_on_computer_languages = [
+      "#{res.message.text} is nothing compared to the magic of a real language.",
+      "Personally, I find #{res.message.text} a little outdated at this point.",
+      "#{res.message.text} is for amateurs",
+      "Oh yea, I used #{res.message.text} once. Now I just write Haskell.\nIt's a lot simpler actually.",
+      "You know, #{res.message.text} is a little too idiomatic for my taste."
+    ]
+    res.send res.random feelings_on_computer_languages
+
+  # robot.enter (res) ->
+  #   res.send res.random enterReplies
+  # robot.leave (res) ->
+  #   res.send res.random leaveReplies
+
+  # Riddlers.
+  robot.respond /play with me/i, (msg) ->
+    url = "riddles"
+    msg.http("http://www.reddit.com/r/#{url}.json")
+    .get() (err, res, body) ->
+      try
+        data = JSON.parse body
+        children = data.data.children
+        joke = msg.random(children).data
+
+        joketext = joke.title.replace(/\*\.\.\.$/,'') + ' ' + joke.selftext.replace(/^\.\.\.\s*/, '')
+
+        msg.send "Alright. It goes like this:\n" + joketext.trim()
+
+      catch ex
+        msg.send "Erm, something went EXTREMELY wrong - #{ex}"
+
+  # Jokers.
   robot.hear /joke|jokes|funny/i, (msg) ->
     url = "jokes"
     msg.http("http://www.reddit.com/r/#{url}.json")
@@ -174,6 +185,21 @@ module.exports = (robot) ->
 
       catch ex
         msg.send "Erm, something went EXTREMELY wrong - #{ex}"
+
+  robot.error (err, res) ->
+    robot.logger.error "DOES NOT COMPUTE"
+
+    if res?
+      res.reply "DOES NOT COMPUTE"
+
+  robot.listen(
+    (message) -> # Match function
+      # Occassionally respond to things that Steve says
+      message.user.name is "yaya" and Math.random() > 0.8
+    (response) -> # Standard listener callback
+      # Let Steve know how happy you are that he exists
+      response.reply "YAYA! YOU'RE MY BEST FRIEND!"
+  )
 
   # robot.respond /topher/i, (res) ->
   #   robot.http("https://twitter.com/tophtucker/status/186585834584150016")
