@@ -85,7 +85,7 @@ module.exports = (robot) ->
   robot.hear /check/i, (res) ->
     res.send "Cha-ching!"
 
-  robot.hear /update|updates|date/i, (res) ->
+  robot.hear /update|updates|updated|date/i, (res) ->
     res.send res.random feelings_on_dates
 
   robot.hear /thanks slinky/i, (res) ->
