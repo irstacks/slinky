@@ -82,10 +82,6 @@ leaveReplies = ['Are you still there?', 'Target lost', 'Searching']
 
 module.exports = (robot) ->
 
-  # Deployables.
-  robot.hear /to production/i, (res) ->
-    res.send res.random spacelaunch
-
   # I like pie, I like cake.
   robot.hear /pie/i, (res) ->
     res.send "I like cake."
