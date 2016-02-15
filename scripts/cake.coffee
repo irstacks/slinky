@@ -35,7 +35,8 @@ feelings_on_dates = [
   "One date, two date, me date, we date!",
   "Did someone day data?",
   "Date! Date! Date! Date! Date! They're on a daaaatee.",
-  "You wanna date me, you wanna love me and marrry me..."
+  "You wanna date me, you wanna love me and marrry me...",
+  "It's definitely a fruit, right? I heard someone say it might be a vegetable..."
 ]
 
 feelings_on_gratitude = [
@@ -101,6 +102,11 @@ getNickNames = (username) ->
     'big J'
 
 module.exports = (robot) ->
+
+  # nicknames for self
+  # general contrarianism
+  # chime in support for isaac
+  #
 
   # Deployables.
   robot.hear /to production/i, (res) ->
@@ -248,6 +254,33 @@ module.exports = (robot) ->
     (response) -> # Standard listener callback
       # Let Steve know how happy you are that he exists
       response.reply "YAYA! YOU'RE MY BEST FRIEND!"
+  )
+
+  robot.listen(
+    (message) -> # Match function
+      # Occassionally respond to things that Steve says
+      message.user.name is "therealia" and Math.random() > 0.8
+    (response) -> # Standard listener callback
+      # Let Steve know how happy you are that he exists
+      response.send "Yea! What he said!"
+  )
+
+  robot.listen(
+    (message) -> # Match function
+      # Occassionally respond to things that Steve says
+      message.length > 140 and Math.random() > 0.8
+    (response) -> # Standard listener callback
+      # Let Steve know how happy you are that he exists
+      response.send "Feeling loquacious, eh?"
+  )
+
+  robot.listen(
+    (message) -> # Match function
+      # Occassionally respond to things that Steve says
+      Math.random() > 0.97
+    (response) -> # Standard listener callback
+      # Let Steve know how happy you are that he exists
+      response.reply response.random ["My friend, you're out of your mind.", "No. Whatever that means, I'm against it.\nThat's just how I feel.", "It's a trap!", "Bitch, please."]
   )
 
   # robot.respond /topher/i, (res) ->
