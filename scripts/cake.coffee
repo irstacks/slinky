@@ -89,6 +89,17 @@ staging_is_awesome = [
   "What? A stage? Not me. I'd be too scared...\n#{staging_url}"
 ]
 
+getNickNames = (username) ->
+  if (username is 'yaya')
+    # TODO: randomizer
+    'big mama'
+  else if (username is 'iiabney')
+    'big I'
+  else if (username is 'therealia')
+    'big papa'
+  else if (username is 'james')
+    'big J'
+
 module.exports = (robot) ->
 
   # Deployables.
@@ -132,6 +143,14 @@ module.exports = (robot) ->
 
   robot.hear /thanks slinky/i, (res) ->
     res.send res.random feelings_on_gratitude
+
+  robot.hear /good (.*) slinky/i, (res) ->
+    res.send res.random [
+      "Thanks, #{getNickNames(res.message.user.name)}!",
+      "You got it.",
+      "Anytime (between 7am and midnight), #{getNickNames(res.message.user.name)}.",
+      "Word up."
+    ]
 
   robot.hear /meeting|meetings/i, (res) ->
     res.send res.random feelings_on_meetings
