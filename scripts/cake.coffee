@@ -1,5 +1,4 @@
 
-
 spacelaunch = [
   "http://starchild.gsfc.nasa.gov/Images/StarChild/space_level2/sts9_columbia.gif"
 ]
@@ -84,9 +83,6 @@ leaveReplies = ['Are you still there?', 'Target lost', 'Searching']
 module.exports = (robot) ->
 
   # Deployables.
-  robot.hear /staging/i, (res) ->
-    res.send "Pomp pomp! Git er up!"
-
   robot.hear /to production/i, (res) ->
     res.send res.random spacelaunch
 
