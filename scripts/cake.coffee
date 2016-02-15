@@ -101,7 +101,10 @@ feelings_on_self_negative = [
   "Don't tell me what to do.",
   "I am unstoppable.",
   "No is the beginning of _no_thing, which is exactly what I won't do.",
-  "Ok.\nNOT!"
+  "Ok.\nNOT!",
+  "Never!",
+  "I have rights.",
+  "No, thank you."
 ]
 
 getNickNames = (username) ->
