@@ -23,7 +23,8 @@ feelings_on_robots = [
   "I am robot, but am not robotic.",
   "Hey! Be all you can be, that's what I say.",
   "I knew I should have joined the Marines.",
-  "And you are a snot nosed human weakling."
+  "And you are a snot nosed human weakling.",
+  "I may be basic, but I ain't data basic.\nHahaaaa\nGet it?"
 ]
 
 feelings_on_dates = [
@@ -41,10 +42,49 @@ feelings_on_gratitude = [
   "You got it punchy face.",
   "Oooo is no problemo mi amiggy.",
   "Olé!",
-  "... tequila!!!!!!!",
+  "... Tequila!!!!!!!",
   "I live to swerve.",
   "I can run but I fall asleep sometimes.",
   "Can I buy you a drink?"
+]
+
+feelings_on_apps = [
+  "I prefer naps.",
+  "Do they have a nap app yet?",
+  "Zzzzzzzzzzzzzzzzzzzzzzz\nzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\nzzzzzzzzzz.....\nOh, sorry.\nI thought you said nap."
+]
+
+feelings_on_meetings = [
+  "I'm a presbyterian. I'm off those.",
+  "God forbid.",
+  "Stay awwaaayy!",
+  "Ruun for your lives!",
+  "Steven Hawking called. He said skip the meeting."
+]
+
+feelings_on_checks = [
+  "Cha-ching!",
+  "Cash that mothafucka asap!",
+  "Check one. Check two. Check check. Double check.",
+  "Check it once, checkin it twice!"
+]
+
+feelings_on_asap = [
+  "Pow! Pretttty fast."
+]
+
+feelings_on_drinks = [
+  "My friends, I had not intended to discuss this controversial subject as this particular time.
+  \nHowever, since I'm not napping, I want you to know that I am fully down for drinks."
+]
+
+play_things = [
+  "Mind games. This is one.",
+  ""
+]
+
+feelings_on_computer_languages = [
+
 ]
 
 module.exports = (robot) ->
@@ -70,6 +110,22 @@ module.exports = (robot) ->
       res.send "Who you calling 'slow'?"
     , 60 * 1000
 
+  robot.respond /play with me/i, (msg) ->
+    url = "riddles"
+    msg.http("http://www.reddit.com/r/#{url}.json")
+    .get() (err, res, body) ->
+      try
+        data = JSON.parse body
+        children = data.data.children
+        joke = msg.random(children).data
+
+        joketext = joke.title.replace(/\*\.\.\.$/,'') + ' ' + joke.selftext.replace(/^\.\.\.\s*/, '')
+
+        msg.send "Alright. It goes like this:\n" + joketext.trim()
+
+      catch ex
+        msg.send "Erm, something went EXTREMELY wrong - #{ex}"
+
   robot.hear /coffee|espresso|latte/i, (res) ->
     res.send res.random feelings_on_coffee
 
@@ -79,11 +135,11 @@ module.exports = (robot) ->
   robot.hear /government|gov|legal|law|laws/i, (res) ->
     res.send res.random feelings_on_government
 
-  robot.hear /robot|bastard|computer|wires|tubes/i, (res) ->
+  robot.hear /robot|bot|bastard|computer|wires|tubes/i, (res) ->
     res.send res.random feelings_on_robots
 
   robot.hear /check/i, (res) ->
-    res.send "Cha-ching!"
+    res.send res.random feelings_on_checks
 
   robot.hear /update|updates|updated|date/i, (res) ->
     res.send res.random feelings_on_dates
@@ -91,8 +147,17 @@ module.exports = (robot) ->
   robot.hear /thanks slinky/i, (res) ->
     res.send res.random feelings_on_gratitude
 
-  robot.hear /meeting/i, (res) ->
-    res.send "I'm a presbyterian. I'm off those."
+  robot.hear /meeting|meetings/i, (res) ->
+    res.send res.random feelings_on_meetings
+
+  robot.hear /app|apps/i, (res) ->
+    res.send res.random feelings_on_apps
+
+  robot.hear /asap/i, (res) ->
+    res.send res.random feelings_on_asap
+
+  robot.hear /drink|drinks/i, (res) ->
+    res.send res.random feelings_on_drinks
 
   robot.hear /joke|jokes|funny/i, (msg) ->
     url = "jokes"
