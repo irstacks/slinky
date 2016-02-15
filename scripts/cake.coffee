@@ -1,3 +1,5 @@
+# Staging url.
+staging_url = process.env.HUBOT_STAGING_URL
 
 spacelaunch = [
   "http://starchild.gsfc.nasa.gov/Images/StarChild/space_level2/sts9_columbia.gif"
@@ -80,7 +82,21 @@ feelings_on_drinks = [
 enterReplies = ['Hi','Lock and loaded', 'Target Acquired', 'Firing', 'Hello friend.', 'Gotcha', 'I see you']
 leaveReplies = ['Are you still there?', 'Target lost', 'Searching']
 
+staging_is_awesome = [
+  "Pomp pomp! Git er up!\n#{staging_url}",
+  "Woooooooeeeeey! Staging is awesome. Go there.\n#{staging_url}",
+  "Staging? I love staging.\n#{staging_url}",
+  "What? A stage? Not me. I'd be too scared...\n#{staging_url}"
+]
+
 module.exports = (robot) ->
+
+  # Deployables.
+  robot.hear /to production/i, (res) ->
+    res.send res.random spacelaunch
+
+  robot.hear /staging/i, (res) ->
+    res.send res.random staging_is_awesome
 
   # I like pie, I like cake.
   robot.hear /pie/i, (res) ->
