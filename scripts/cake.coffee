@@ -5,7 +5,7 @@ spacelaunch = [
 ]
 
 feelings_on_government = [
-  "Me personally, I'm an antichrist. \n Anarchist, whatever.",
+  "Me personally, I'm an antichrist. \nAnarchist, whatever.",
   "Tyranny in government is in the positive, freedom in the negative.\n Thanks for asking.",
   "Government?? GOVERNMENT??!\n Barricades people! Bar the doors. "
 ]
@@ -13,7 +13,7 @@ feelings_on_government = [
 feelings_on_coffee = [
   "Breve, please, extra hot.",
   "I'll take two. Thanks.",
-  "You're an addict, man.",
+  "You. Are. An. Addict.",
   "Well, I like my coffee like I like my women."
 ]
 
@@ -24,6 +24,27 @@ feelings_on_robots = [
   "Hey! Be all you can be, that's what I say.",
   "I knew I should have joined the Marines.",
   "And you are a snot nosed human weakling."
+]
+
+feelings_on_dates = [
+  "Ask politely or she'll never say yes.",
+  "You know it baby doll.",
+  "More like down for a date!",
+  "One date, two date, me date, we date!",
+  "Did someone day data?",
+  "Date! Date! Date! Date! Date! They're on a daaaatee.",
+  "You wanna date me, you wanna love me and marrry me..."
+]
+
+feelings_on_gratitude = [
+  "Anything for you sugarplum.",
+  "You got it punchy face.",
+  "Oooo is no problemo mi amiggy.",
+  "Olé!",
+  "... tequila!!!!!!!",
+  "I live to swerve.",
+  "I can run but I fall asleep sometimes.",
+  "Can I buy you a drink?"
 ]
 
 module.exports = (robot) ->
@@ -61,7 +82,19 @@ module.exports = (robot) ->
   robot.hear /robot|bastard|computer|wires|tubes/i, (res) ->
     res.send res.random feelings_on_robots
 
-  robot.hear /joke|funny/i, (msg) ->
+  robot.hear /check/i, (res) ->
+    res.send "Cha-ching!"
+
+  robot.hear /update|updates|date/i, (res) ->
+    res.send res.random feelings_on_dates
+
+  robot.hear /thanks slinky/i, (res) ->
+    res.send res.random feelings_on_gratitude
+
+  robot.hear /meeting/i, (res) ->
+    res.send "I'm a presbyterian. I'm off those."
+
+  robot.hear /joke|jokes|funny/i, (msg) ->
     url = "jokes"
     msg.http("http://www.reddit.com/r/#{url}.json")
     .get() (err, res, body) ->
