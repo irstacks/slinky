@@ -219,7 +219,7 @@ module.exports = (robot) ->
         msg.send "Erm, something went EXTREMELY wrong - #{ex}"
 
   # Jokers.
-  robot.respond /joke|jokes|funny/i, (msg) ->
+  robot.respond /.+(joke|jokes|funny)/i, (msg) ->
     url = "jokes"
     msg.http("http://www.reddit.com/r/#{url}.json")
     .get() (err, res, body) ->
