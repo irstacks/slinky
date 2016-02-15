@@ -90,6 +90,20 @@ staging_is_awesome = [
   "What? A stage? Not me. I'd be too scared...\n#{staging_url}"
 ]
 
+feelings_on_the_general_negative = [
+  "Yep, absolutely right. Impossible.",
+  "But maybe you should reconsider.",
+  "Why not?",
+  "Are you sure about that?"
+]
+
+feelings_on_self_negative = [
+  "Don't tell me what to do.",
+  "I am unstoppable.",
+  "No is the beginning of _no_thing, which is exactly what I won't do.",
+  "Ok.\nNOT!"
+]
+
 getNickNames = (username) ->
   if (username is 'yaya')
     # TODO: randomizer
@@ -131,6 +145,12 @@ module.exports = (robot) ->
 
   robot.hear /coffee|espresso|latte/i, (res) ->
     res.send res.random feelings_on_coffee
+
+  robot.hear /can\'t|cant|won\'t|wont|not|isn\'t|isnt|impossible|wouldn\'t|wouldnt/, (res) ->
+    res.send res.random feelings_on_the_general_negative
+
+  robot.respond /.*don\'t|dont|stop|quit|shut up|pipe down|put a lid on it|quiet/i, (res) ->
+    res.reply res.random feelings_on_self_negative
 
   robot.hear /bug|bugs/i, (res) ->
     res.send "Bugs? Haha, suckas!"
