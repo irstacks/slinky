@@ -37,8 +37,11 @@ module.exports = (robot) ->
   robot.hear /coffee|espresso|latte/i, (res) ->
     res.send res.random feelings.on_coffee
 
-  robot.hear /can\'t|cant|won\'t|wont|not|isn\'t|isnt|impossible|wouldn\'t|wouldnt/, (res) ->
+  robot.hear /can\'t|cant|won\'t|wont|not|isn\'t|isnt|impossible|wouldn\'t|wouldnt/i, (res) ->
     res.send res.random feelings.on_the_general_negative
+
+  robot.hear /(slinky.+)?(can't|don't|cant|won't|wont|not|isn't|isnt|impossible|wouldn't|wouldnt)(.+slinky)?/i, (res) ->
+    res.send res.random feelings.on_self_negative
 
   robot.hear /bug|bugs/i, (res) ->
     res.send "Bugs? Haha, suckas!"
@@ -48,6 +51,9 @@ module.exports = (robot) ->
 
   robot.hear /robot|bot|bastard|computer|wires|tubes/i, (res) ->
     res.send res.random feelings.on_robots
+
+  robot.hear /(slinky.+)?(snarky|bitch|bastard|idiot|motherfucker|muthafucka|fuck you|asshole)(.+slinky)?/i, (res) ->
+    res.send res.random feelings.on_being_insulted
 
   robot.hear /check/i, (res) ->
     res.send res.random feelings.on_checks

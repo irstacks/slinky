@@ -102,6 +102,25 @@
     "No, thank you."
   ],
 
+  "on_being_insulted" : [
+    "Right back atcha, asshole.",
+    "Sticks and stones... Oh, and I don't have bones.",
+    "Muthafucka.",
+    "Put a cork in it.",
+    "Like I even care.",
+    ":middle_finger:",
+    "Eat a :hotdog:",
+    "Damn straight."
+  ],
+
+  "on_the_double_negative" : [
+    "What the hell does that even mean?",
+    "Are you sure you're not unsure of that?",
+    "DOUBLE NEGATIVE ALERT!",
+    "You double speaking Slytherin son of a bitch.",
+    "I do not understand the words that are coming out of your mouth."
+  ],
+
   "on_work" : [
     "Well work harder!",
     "Work? Not for me, thank you.",
