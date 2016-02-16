@@ -128,10 +128,10 @@ module.exports = (robot) ->
     ]
     res.send res.random feelings_on_computer_languages
 
-# Is an encouraging meme freak.
-robot.hear /^(alright)/gi, (res) ->
-  res.send res.random feelings.on_alright
+  # Is an encouraging meme freak.
+  robot.hear /^(alright)/i, (res) ->
+    res.send res.random feelings.on_alright
 
-robot.hear /^(ok)/gi, (res) ->
-  res.send res.random feelings.on_ok
+  robot.hear /^(ok)/i, (res) ->
+    res.send res.random feelings.on_ok
 
