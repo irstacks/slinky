@@ -107,6 +107,13 @@ feelings_on_self_negative = [
   "No, thank you."
 ]
 
+feelings_on_work = [
+  "Well work harder!",
+  "Work? Not for me, thank you.",
+  "Work? I prefer to fork.",
+  "Work... rhymes with the Bjørk."
+]
+
 getNickNames = (username) ->
   if (username is 'yaya')
     # TODO: randomizer
@@ -175,6 +182,9 @@ module.exports = (robot) ->
       "Anytime (between 7am and midnight), #{getNickNames(res.message.user.name)}.",
       "Word up."
     ]
+
+  robot.hear /work|working on|works/i, (res) ->
+    res.send res.random feelings_on_work
 
   robot.hear /meeting|meetings/i, (res) ->
     res.send res.random feelings_on_meetings
