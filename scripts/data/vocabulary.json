@@ -1,0 +1,40 @@
+{
+  "shush" : [
+    "stop",
+    "quit",
+    "shut up",
+    "pipe down",
+    "put a lid on it",
+    "quiet"
+  ],
+
+  "negative" : [
+    "can't",
+    "don't",
+    "doesn't",
+    "doesnt",
+    "cant",
+    "won't",
+    "wont",
+    "isn't",
+    "isnt",
+    "impossible",
+    "wouldn't",
+    "wouldnt",
+    "shouldn't",
+    "shouldnt"
+  ],
+
+  "mean" : [
+  "snarky",
+  "bitch",
+  "bastard",
+  "idiot",
+  "motherfucker",
+  "muthafucka",
+  "fuck you",
+  "asshole",
+  "chump",
+  "mouse face"
+  ]
+}

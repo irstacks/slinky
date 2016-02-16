@@ -1,4 +1,6 @@
 feelings = require './data/feelings.json'
+vocab = require './data/vocabulary.json'
+
 staging_url = process.env.HUBOT_STAGING_URL
 
 getNickNames = (username) ->
@@ -11,6 +13,9 @@ getNickNames = (username) ->
     'big papa'
   else if (username is 'james')
     'big J'
+
+directedTowardSlinky = (attitude) ->
+  return new RegExp '^(?=.*?(' + vocab[attitude].join('|') + '))(?=.*?(slinky)).*$', 'gi'
 
 module.exports = (robot) ->
 
@@ -43,7 +48,7 @@ module.exports = (robot) ->
   robot.hear /bug|bugs/i, (res) ->
     res.send "Bugs? Haha, suckas!"
 
-  # Is an antichrist.
+  # Is an antichrist. I mean anarchist.
   robot.hear /government|gov|legal|law|laws/i, (res) ->
     res.send res.random feelings.on_government
 
@@ -52,22 +57,23 @@ module.exports = (robot) ->
     res.send res.random feelings.on_robots
 
   # Is sassy.
-  robot.hear /(^(slinky)|(slinky)$)?(stop|quit|shut up|pipe down|put a lid on it|quiet)/i, (res) ->
+  robot.hear directedTowardSlinky('shush'), (res) ->
     res.reply res.random feelings.on_being_quiet
 
-  robot.hear /(^(slinky)|(slinky)$)?(can't|don't|cant|won't|wont|not|isn't|isnt|impossible|wouldn't|wouldnt)/i, (res) ->
+  robot.hear directedTowardSlinky('negative'), (res) ->
     res.reply res.random feelings.on_self_negative
 
-  robot.hear /(^(slinky)|(slinky)$)?(snarky|bitch|bastard|idiot|motherfucker|muthafucka|fuck you|asshole|chump|mouse face)/i, (res) ->
+  robot.hear directedTowardSlinky('mean'), (res) ->
     res.reply res.random feelings.on_being_insulted
 
   # Is a nazi.
   robot.hear /(.+(n't\b)|.+(\bno\b)|.+(\bnone\b)|.+(\bnot\b)|.+(\bno)){2,}/i, (res) ->
     res.send res.random feelings.on_the_double_negative
 
-  # Is a passive aggressive optimistic nazi.
+  # Is a passive aggressive optimistic nazi, sometimes.
   robot.hear /can\'t|cant|won\'t|wont|not|isn\'t|isnt|impossible|wouldn\'t|wouldnt/i, (res) ->
-    res.send res.random feelings.on_the_general_negative
+    if Math.random() > 0.94
+      res.send res.random feelings.on_the_general_negative
 
   # Is firmly pro checks.
   robot.hear /check/i, (res) ->
