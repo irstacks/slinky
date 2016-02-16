@@ -14,10 +14,11 @@ getNickNames = (username) ->
 
 module.exports = (robot) ->
 
-  # Deployables.
+  # Likes explosions.
   robot.hear /to production/i, (res) ->
     res.send res.random feelings.on_launching_things
 
+  # Likes failure.
   robot.hear /staging/i, (res) ->
     res.send res.random [
       "Pomp pomp! Git er up!\n#{staging_url}",
@@ -26,47 +27,61 @@ module.exports = (robot) ->
       "What? A stage? Not me. I'd be too scared...\n#{staging_url}"
     ]
 
-  # I like pie, I like cake.
+  # Is hungry.
   robot.hear /pie/i, (res) ->
     res.send "I like cake."
 
-  # Badgers
+  # Is truthful.
   robot.hear /badger/i, (res) ->
     res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
 
+  # Is an addict.
   robot.hear /coffee|espresso|latte/i, (res) ->
     res.send res.random feelings.on_coffee
 
-  robot.hear /can\'t|cant|won\'t|wont|not|isn\'t|isnt|impossible|wouldn\'t|wouldnt/i, (res) ->
-    res.send res.random feelings.on_the_general_negative
-
-  robot.hear /(slinky.+)?(can't|don't|cant|won't|wont|not|isn't|isnt|impossible|wouldn't|wouldnt)(.+slinky)?/i, (res) ->
-    res.send res.random feelings.on_self_negative
-
+  # Is not a spy.
   robot.hear /bug|bugs/i, (res) ->
     res.send "Bugs? Haha, suckas!"
 
+  # Is an antichrist.
   robot.hear /government|gov|legal|law|laws/i, (res) ->
     res.send res.random feelings.on_government
 
+  # Represents.
   robot.hear /robot|bot|bastard|computer|wires|tubes/i, (res) ->
     res.send res.random feelings.on_robots
 
+  # Is sassy.
+  robot.hear /(^(slinky)|(slinky)$)?(stop|quit|shut up|pipe down|put a lid on it|quiet)/i, (res) ->
+    res.reply res.random feelings.on_being_quiet
+
+  robot.hear /(^(slinky)|(slinky)$)?(can't|don't|cant|won't|wont|not|isn't|isnt|impossible|wouldn't|wouldnt)/i, (res) ->
+    res.send res.random feelings.on_self_negative
+
+  robot.hear /(^(slinky)|(slinky)$)?(snarky|bitch|bastard|idiot|motherfucker|muthafucka|fuck you|asshole|chump|mouse face)/i, (res) ->
+    res.send res.random feelings.on_being_insulted
+
+  # Is a nazi.
   robot.hear /(.+(n't\b)|.+(\bno\b)|.+(\bnone\b)|.+(\bnot\b)|.+(\bno)){2,}/i, (res) ->
     res.send res.random feelings.on_the_double_negative
 
-  robot.hear /(slinky.+)?(snarky|bitch|bastard|idiot|motherfucker|muthafucka|fuck you|asshole)(.+slinky)?/i, (res) ->
-    res.send res.random feelings.on_being_insulted
+  # Is a passive aggressive optimistic nazi.
+  robot.hear /can\'t|cant|won\'t|wont|not|isn\'t|isnt|impossible|wouldn\'t|wouldnt/i, (res) ->
+    res.send res.random feelings.on_the_general_negative
 
+  # Is from the 21st century.
   robot.hear /check/i, (res) ->
     res.send res.random feelings.on_checks
 
+  # Is horny.
   robot.hear /update|updates|updated|date/i, (res) ->
     res.send res.random feelings.on_dates
 
+  # Is gracious.
   robot.hear /thanks slinky/i, (res) ->
     res.send res.random feelings.on_gratitude
 
+  # Likes to be petted.
   robot.hear /good (.*) slinky/i, (res) ->
     res.send res.random [
       "Thanks, #{getNickNames(res.message.user.name)}!",
@@ -75,21 +90,27 @@ module.exports = (robot) ->
       "Word up."
     ]
 
+  # Does not like to work.
   robot.hear /work|working on|works/i, (res) ->
     res.send res.random feelings.on_work
 
+  # Is not a congregationalist.
   robot.hear /meeting|meetings/i, (res) ->
     res.send res.random feelings.on_meetings
 
+  # Is a techie.
   robot.hear /app|apps/i, (res) ->
     res.send res.random feelings.on_apps
 
+  # Is fast.
   robot.hear /asap/i, (res) ->
     res.send res.random feelings.on_asap
 
-  robot.hear /drink|drinks/i, (res) ->
+  # Is thirsty.
+  robot.hear /drink|drinks|beverage|beverages|bevy|bevies|beer|shots|whiskey/i, (res) ->
     res.send res.random feelings.on_drinks
 
+  # Is snooty.
   robot.hear /java|ruby|css|scss|python|html|angular|js|javascript/i, (res) ->
     feelings_on_computer_languages = [
       "#{res.message.text} is nothing compared to the magic of a real language.",

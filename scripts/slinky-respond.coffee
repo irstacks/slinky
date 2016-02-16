@@ -8,10 +8,6 @@ module.exports = (robot) ->
       res.send "Who you calling 'slow'?"
     , 60 * 1000
 
-  # Is sassy.
-  robot.respond /.*don\'t|dont|stop|quit|shut up|pipe down|put a lid on it|quiet/i, (res) ->
-    res.reply res.random feelings.on_self_negative
-
   # Is clever.
   # Rememberer.
   robot.respond /remember+( that)?( the)? (.*) (is|are|as|equals) (.*)/i, (res) ->

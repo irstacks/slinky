@@ -1,55 +1,35 @@
+# Is a heckler.
+heckles = require './data/heckles.json'
 
 module.exports = (robot) ->
+
+  # Heckles teammates.
   robot.listen(
     (message) -> # Match function
       # Occassionally respond to things that Steve says
-      message.user.name is "yaya" and Math.random() > 0.9
+      sname = message.user.name
+      message.user.name is sname and Math.random() > 0.92
     (response) -> # Standard listener callback
       # Let Steve know how happy you are that he exists
-      response.reply "YAYA! YOU'RE MY BEST FRIEND!"
+      response.send response.random heckles[sname]
   )
 
+  # Heckles speechifying.
   robot.listen(
     (message) -> # Match function
       # Occassionally respond to things that Steve says
-      message.user.name is "therealia" and Math.random() > 0.9
+      message.length > 200 and Math.random() > 0.9
     (response) -> # Standard listener callback
       # Let Steve know how happy you are that he exists
-      response.send "Yea! What he said!"
+      response.send response.random heckles.loquacious_people
   )
 
-  robot.listen(
-    (message) -> # Match function
-      # Occassionally respond to things that Steve says
-      message.user.name is "james" and Math.random() > 0.9
-    (response) -> # Standard listener callback
-      # Let Steve know how happy you are that he exists
-      response.send "Nice."
-  )
-
-  robot.listen(
-    (message) -> # Match function
-      # Occassionally respond to things that Steve says
-      message.user.name is "iiabney" and Math.random() > 0.9
-    (response) -> # Standard listener callback
-      # Let Steve know how happy you are that he exists
-      response.send "Ooooooooooohhhhhhhhhh!"
-  )
-
-  robot.listen(
-    (message) -> # Match function
-      # Occassionally respond to things that Steve says
-      message.length > 140 and Math.random() > 0.9
-    (response) -> # Standard listener callback
-      # Let Steve know how happy you are that he exists
-      response.send "Feeling loquacious, eh?"
-  )
-
+  # Heckles at liberty.
   robot.listen(
     (message) -> # Match function
       # Occassionally respond to things that Steve says
       Math.random() > 0.97
     (response) -> # Standard listener callback
       # Let Steve know how happy you are that he exists
-      response.reply response.random ["My friend, you're out of your mind.", "No. Whatever that means, I'm against it.\nThat's just how I feel.", "It's a trap!", "Bitch, please."]
+      response.reply response.random heckles.willy_nilly
   )

@@ -79,7 +79,16 @@
   ],
 
   "on_drinks" : [
-    "My friends, I had not intended to discuss this controversial subject as this particular time.\nHowever, since I'm not napping, I want you to know that I am fully down for drinks."
+    "My friends, I had not intended to discuss this controversial subject as this particular time.\nHowever, since I'm not napping, I want you to know that I am fully down for drinks.",
+    "Yes please.",
+    "I want two of everything.",
+    "bro",
+    "Bro.",
+    "Bro!",
+    "BRO!",
+    "Beer me, bro.",
+    "Jeremiah muthafuckin weed",
+    "And then some"
   ],
 
   "enterReplies" : ["Hi","Lock and loaded", "Target Acquired", "Firing", "Hello friend.", "Gotcha", "I see you"],
@@ -89,7 +98,10 @@
     "Yep, absolutely right. Impossible.",
     "But maybe you should reconsider.",
     "Why not?",
-    "Are you sure about that?"
+    "Are you sure about that?",
+    "I believe in you.\nSort of.",
+    "Yes, no... what difference does it even make?",
+    "But you know what, shoot for the stars.\nhttps://upload.wikimedia.org/wikipedia/en/thumb/7/73/National_Rifle_Association.svg/1024px-National_Rifle_Association.svg.png"
   ],
 
   "on_self_negative" : [
@@ -100,6 +112,17 @@
     "Never!",
     "I have rights.",
     "No, thank you."
+  ],
+
+  "on_being_quiet" : [
+    "BAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAA",
+    "I will not take advice from a madman.",
+    "I'm sorry, I missed that. Can you speak a little louder?",
+    "You're mumbling again.",
+    "You smell funny.",
+    "I bet I am more patient than you.",
+    "Beep.\n\n\n\n\n\n\n\n\n\nBeep.\n\n\n\n\nBeep.\n\n\n\nn\n\n\n\n\n\n\n\n\n\n\n\n\n\nBeep.\nShall I continue?",
+    "I got 99 problems and your ass ain't one."
   ],
 
   "on_being_insulted" : [
