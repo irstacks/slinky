@@ -45,9 +45,9 @@ whatWouldTophTweet = (msg) ->
     return msg.send "Error retrieving tweets!" if err
     return msg.send "No results returned!" unless statuses?.length
 
-    # get tweet that is not talking directly to someone
+    # get tweet that is not talking directly to someone or RT-ing
     randomTweet = ""
-    pattern = /^\@/i # text begins with @
+    pattern = /^(\@|RT)/i # text begins with @
 
     getARandomTophTweet = ->
       randomTweet = statuses[Math.floor(Math.random() * statuses.length)]
