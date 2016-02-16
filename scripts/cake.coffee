@@ -120,11 +120,6 @@ getNickNames = (username) ->
 
 module.exports = (robot) ->
 
-  # nicknames for self
-  # general contrarianism
-  # chime in support for isaac
-  #
-
   # Deployables.
   robot.hear /to production/i, (res) ->
     res.send res.random spacelaunch
