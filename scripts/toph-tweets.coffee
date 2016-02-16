@@ -45,7 +45,7 @@ whatWouldTophTweet = (msg) ->
     return msg.send "Error retrieving tweets!" if err
     return msg.send "No results returned!" unless statuses?.length
 
-    randomTophTweet = statuses[Math.floor(Math.random() * myArray.length)]
+    randomTophTweet = statuses[Math.floor(Math.random() * statuses.length)]
     response = "#{randomTophTweet.text}"
     # i = 0
     # msg.send "Recent tweets from #{statuses[0].user.screen_name}"
