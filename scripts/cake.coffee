@@ -1,6 +1,6 @@
 module.exports = (robot) ->
 
-  # General borkenness.
+  # General borkenness computer.
   robot.error (err, res) ->
     robot.logger.error "DOES NOT COMPUTE"
 
