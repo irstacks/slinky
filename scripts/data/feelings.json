@@ -8,6 +8,20 @@
     "http://cdn.meme.am/instances/500x/66661470.jpg"
   ],
 
+  "on_alright" : [
+    "http://cdn.meme.am/instances/500x/61328759.jpg",
+    "http://www.quickmeme.com/img/11/119c14848c39217d98ec1578b80ca55d58e8bbf70dd7decc0d35d0d8673cfd93.jpg",
+    "http://cdn.meme.am/instances/250x250/50212696.jpg",
+    "http://cdn.meme.am/instances/50600606.jpg",
+    "http://memecrunch.com/meme/3OISI/alright-then/image.jpg"
+  ],
+
+  "on_ok" : [
+    "http://cdn.meme.am/instances/43026737.jpg",
+    "http://cdn.meme.am/instances/63295169.jpg",
+    "http://memesvault.com/wp-content/uploads/Victory-Baby-Yes-07.jpg"
+  ],
+
   "on_government" : [
     "Me personally, I'm an antichrist. \nAnarchist, whatever.",
     "Tyranny in government is in the positive, freedom in the negative.\n Thanks for asking.",
@@ -121,7 +135,7 @@
     "I'm sorry, I missed that. Can you speak a little louder?",
     "You're mumbling again.",
     "You smell funny.",
-    "I bet I am more patient than you.",
+    "I would never.",
     "Beep.\n\n\n\n\n\n\n\n\n\nBeep.\n\n\n\n\nBeep.\n\n\n\nn\n\n\n\n\n\n\n\n\n\n\n\n\n\nBeep.\nShall I continue?",
     "I got 99 problems and your ass ain't one."
   ],

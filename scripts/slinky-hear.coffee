@@ -20,11 +20,11 @@ directedTowardSlinky = (attitude) ->
 module.exports = (robot) ->
 
   # Likes explosions.
-  robot.hear /to production/i, (res) ->
+  robot.hear /(to|on|for) production/i, (res) ->
     res.send res.random feelings.on_launching_things
 
   # Likes failure.
-  robot.hear /staging/i, (res) ->
+  robot.hear /(to|on|for) staging/i, (res) ->
     res.send res.random [
       "Pomp pomp! Git er up!\n#{staging_url}",
       "Woooooooeeeeey! Staging is awesome. Go there.\n#{staging_url}",
@@ -98,7 +98,8 @@ module.exports = (robot) ->
 
   # Does not like to work.
   robot.hear /work|working on|works/i, (res) ->
-    res.send res.random feelings.on_work
+    if Math.random() > 0.91
+      res.send res.random feelings.on_work
 
   # Is not a congregationalist.
   robot.hear /meeting|meetings/i, (res) ->
@@ -126,4 +127,11 @@ module.exports = (robot) ->
       "You know, #{res.message.text} is a little too idiomatic for my taste."
     ]
     res.send res.random feelings_on_computer_languages
+
+# Is an encouraging meme freak.
+robot.hear /^(alright)/gi, (res) ->
+  res.send res.random feelings.on_alright
+
+robot.hear /^(ok)/gi, (res) ->
+  res.send res.random feelings.on_ok
 
