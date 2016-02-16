@@ -56,10 +56,10 @@ module.exports = (robot) ->
     res.reply res.random feelings.on_being_quiet
 
   robot.hear /(^(slinky)|(slinky)$)?(can't|don't|cant|won't|wont|not|isn't|isnt|impossible|wouldn't|wouldnt)/i, (res) ->
-    res.send res.random feelings.on_self_negative
+    res.reply res.random feelings.on_self_negative
 
   robot.hear /(^(slinky)|(slinky)$)?(snarky|bitch|bastard|idiot|motherfucker|muthafucka|fuck you|asshole|chump|mouse face)/i, (res) ->
-    res.send res.random feelings.on_being_insulted
+    res.reply res.random feelings.on_being_insulted
 
   # Is a nazi.
   robot.hear /(.+(n't\b)|.+(\bno\b)|.+(\bnone\b)|.+(\bnot\b)|.+(\bno)){2,}/i, (res) ->
@@ -69,7 +69,7 @@ module.exports = (robot) ->
   robot.hear /can\'t|cant|won\'t|wont|not|isn\'t|isnt|impossible|wouldn\'t|wouldnt/i, (res) ->
     res.send res.random feelings.on_the_general_negative
 
-  # Is from the 21st century.
+  # Is firmly pro checks.
   robot.hear /check/i, (res) ->
     res.send res.random feelings.on_checks
 
