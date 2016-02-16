@@ -210,7 +210,7 @@ module.exports = (robot) ->
 
 
   # Rememberer.
-  robot.respond /remember+( that)?( the)? (.*) (is|are) (.*)/i, (res) ->
+  robot.respond /remember+( that)?( the)? (.*) (is|are|as|equals) (.*)/i, (res) ->
     # Get number of sodas had (coerced to a number).
     # sodasHad = robot.brain.get('totalSodas') * 1 or 0
     thing_to_remember_as = res.match[3]
