@@ -45,15 +45,24 @@ whatWouldTophTweet = (msg) ->
     return msg.send "Error retrieving tweets!" if err
     return msg.send "No results returned!" unless statuses?.length
 
-    randomTophTweet = statuses[Math.floor(Math.random() * statuses.length)]
-    response = "#{randomTophTweet.text}"
-    # i = 0
-    # msg.send "Recent tweets from #{statuses[0].user.screen_name}"
-    # for status, i in statuses
-    #   response += "#{status.text}"
-    #   response += "\n" if i != count-1
+    # get tweet that is not talking directly to someone
+    randomTweet = ""
+    pattern = /^\@/i # text begins with @
 
-    return msg.send response
+    getARandomTophTweet = ->
+      randomTweet = statuses[Math.floor(Math.random() * statuses.length)]
+
+    # if at first you don't succeed...
+    getARandomTophTweet()
+
+    # try try again
+    while randomTweet.text.match pattern
+      if randomTweet.text.match pattern
+        getARandomTophTweet()
+      else
+        break
+
+    return msg.send "#{randomTweet.text}"
 
 module.exports = (robot) ->
 
