@@ -1,4 +1,0 @@
-# # Jokes.
-# module.exports = (robot) ->
-
-
