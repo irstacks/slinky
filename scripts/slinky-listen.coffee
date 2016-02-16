@@ -8,7 +8,7 @@ module.exports = (robot) ->
     (message) -> # Match function
       # Occassionally respond to things that Steve says
       sname = message.user.name
-      message.user.name is sname and Math.random() > 0.95
+      message.user.name is sname and Math.random() > 0.98
     (response) -> # Standard listener callback
       # Let Steve know how happy you are that he exists
       response.send response.random heckles[sname]
@@ -28,7 +28,7 @@ module.exports = (robot) ->
   robot.listen(
     (message) -> # Match function
       # Occassionally respond to things that Steve says
-      Math.random() > 0.98
+      Math.random() > 0.99
     (response) -> # Standard listener callback
       # Let Steve know how happy you are that he exists
       response.reply response.random heckles.willy_nilly
