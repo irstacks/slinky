@@ -57,5 +57,6 @@ whatWouldTophTweet = (msg) ->
 
 module.exports = (robot) ->
 
+  # What would toph tweet.
   robot.hear /wwtt/i, (msg) ->
     whatWouldTophTweet(msg)
