@@ -52,6 +52,9 @@ module.exports = (robot) ->
   robot.hear /robot|bot|bastard|computer|wires|tubes/i, (res) ->
     res.send res.random feelings.on_robots
 
+  robot.hear /(.+nt|.+(n't)|.+no){2,}/i, (res) ->
+    res.send res.random feelings.on_the_double_negative
+
   robot.hear /(slinky.+)?(snarky|bitch|bastard|idiot|motherfucker|muthafucka|fuck you|asshole)(.+slinky)?/i, (res) ->
     res.send res.random feelings.on_being_insulted
 
