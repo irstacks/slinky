@@ -36,7 +36,7 @@ whatWouldTophTweet = (msg) ->
   username = 'tophtucker' #msg.match[2]
 
   twit = getTwit()
-  count = 100
+  count = 1000
   searchConfig =
     screen_name: username,
     count: count
