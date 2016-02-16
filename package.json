@@ -22,7 +22,6 @@
     "hubot-slack": "^3.4.2",
     "hubot-tweets": "0.0.1",
     "hubot-victory": ">= 0.0.0",
-    // "ntwitter": "^0.5.0",
     "twit": "^1.1.20"
   },
   "engines": {
