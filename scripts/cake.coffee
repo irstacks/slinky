@@ -296,6 +296,24 @@ module.exports = (robot) ->
   robot.listen(
     (message) -> # Match function
       # Occassionally respond to things that Steve says
+      message.user.name is "james" and Math.random() > 0.8
+    (response) -> # Standard listener callback
+      # Let Steve know how happy you are that he exists
+      response.send "Nice."
+  )
+
+  robot.listen(
+    (message) -> # Match function
+      # Occassionally respond to things that Steve says
+      message.user.name is "iiabney" and Math.random() > 0.8
+    (response) -> # Standard listener callback
+      # Let Steve know how happy you are that he exists
+      response.send "Ooooooooooohhhhhhhhhh!"
+  )
+
+  robot.listen(
+    (message) -> # Match function
+      # Occassionally respond to things that Steve says
       message.length > 140 and Math.random() > 0.8
     (response) -> # Standard listener callback
       # Let Steve know how happy you are that he exists
