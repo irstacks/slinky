@@ -46,9 +46,10 @@ module.exports = (robot) ->
       res.send "OK. Current pep set to #{current_pep*1.15}"
 
   # Manners and get pep levelers.
-  robot.respond /(((what(|\'s)|where(|'s))(are|is|)(your|)).+(manners|pep)|pep level|peppiness)|(^|\s)^pep(\s|$)$/i, (res) ->
+  robot.respond /(((what(|\'s)|where(|'s)|how)(are|is|)(your|)).+(manners|pep)|pep level|peppiness|^manners$)/i, (res) ->
     current_pep = robot.brain.get('pep')
     res.send "Pep level set to #{current_pep}."
+
 
   # General borkenness computer.
   # By the way this script is loaded first because of the alphabet.
