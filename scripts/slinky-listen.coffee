@@ -3,12 +3,19 @@ heckles = require './data/heckles.json'
 
 module.exports = (robot) ->
 
+  inhibitions = (importanceBias) ->
+    peppiness_level = robot.brain.get('pep')
+    if Math.random() < peppiness_level/100*importanceBias # ie 50/100 * .8
+      return true
+    else
+      return false
+
   # Heckles teammates.
   robot.listen(
     (message) -> # Match function
       # Occassionally respond to things that Steve says
       sname = message.user.name
-      message.user.name is sname and Math.random() > 0.98
+      message.user.name is sname and inhibitions(0.05)
     (response) -> # Standard listener callback
       # Let Steve know how happy you are that he exists
       response.send response.random heckles[sname]
@@ -18,7 +25,7 @@ module.exports = (robot) ->
   robot.listen(
     (message) -> # Match function
       # Occassionally respond to things that Steve says
-      message.length > 200 and Math.random() > 0.9
+      message.length > 200 and inhibitions(0.1)
     (response) -> # Standard listener callback
       # Let Steve know how happy you are that he exists
       response.send response.random heckles.loquacious_people
@@ -28,7 +35,7 @@ module.exports = (robot) ->
   robot.listen(
     (message) -> # Match function
       # Occassionally respond to things that Steve says
-      Math.random() > 0.99
+      inhibitions(0.03)
     (response) -> # Standard listener callback
       # Let Steve know how happy you are that he exists
       response.reply response.random heckles.willy_nilly

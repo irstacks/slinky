@@ -1,4 +1,54 @@
+
+
 module.exports = (robot) ->
+
+  # Turning slinky up or down.
+
+  # Go.
+  robot.respond /(go)$/i, (res) ->
+    robot.brain.set 'pep', 100
+    res.send "Got it. Pep set to 100."
+
+  # Slow.
+  robot.respond /(slow)$/i, (res) ->
+    robot.brain.set 'pep', 30
+    res.send "Got it. Pep set to 30."
+
+  # Stop.
+  robot.respond /(stop)$/i, (res) ->
+    robot.brain.set 'pep', 0
+    res.send "Got it. Pep set to 0."
+
+  # Precision pep.
+  robot.respond /((peppy|pep).+(\d+))$/i, (res) ->
+    pep_lev = res.match[2] # the number
+    robot.brain.set 'pep', pep_lev
+    res.send "Pep level set to #{pep_lev}."
+
+  # Pep level turn down.
+  robot.respond /pip(|e) down|quiet|(s|)hush|\bsh\b/i, (res) ->
+    current_pep = robot.brain.get('pep')
+    robot.brain.set 'pep', current_pep*0.6
+    res.send "OK. Pep level turned down."
+
+  # Turnt up to what.
+  robot.respond /(pip(|e)|speak) up|be louder|.*(beer|tequila)/i, (res) ->
+    alcohol = res.match[-1]
+    current_pep = robot.brain.get('pep')
+    if alcohol == 'beer'
+      robot.brain.set 'pep', current_pep*1.3
+      res.send "Delicious. Current pep set to #{current_pep*1.2}"
+    if alcohol == 'tequila'
+      robot.brain.set 'pep', current_pep*1.6
+      res.send "Tequila! My favorite. Current pep set to #{current_pep*1.6}"
+    else
+      robot.brain.set 'pep', current_pep*1.15
+      res.send "OK. Current pep set to #{current_pep*1.15}"
+
+  # Manners.
+  robot.respond /((what|where) (are|is) your|).manners/i, (res) ->
+    current_pep = robot.brain.get('pep')
+    res.send "Pep level set to #{current_pep}."
 
   # General borkenness computer.
   # By the way this script is loaded first because of the alphabet.

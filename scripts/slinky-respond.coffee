@@ -19,12 +19,12 @@ module.exports = (robot) ->
     if robot.brain.get(thing_to_remember_as) == null
       # res.reply "I'm too fizzy.."
       robot.brain.set thing_to_remember_as, thing_to_remember
-      res.reply "Oooooooh that's a new one.\nAlright, I got #{thing_to_remember_as} down as #{thing_to_remember}.\nCarry on."
+      res.reply "OK, I have #{thing_to_remember_as} down as #{thing_to_remember}.\nCarry on."
     else
-      res.reply "Alright, but be advised: #{thing_to_remember_as} used to be #{thing_to_remember}"
+      res.reply "OK, but be advised: #{thing_to_remember_as} used to be #{thing_to_remember}"
       res.send "Updating..."
       robot.brain.set thing_to_remember_as, thing_to_remember
-      res.send "Got it - #{thing_to_remember_as} = #{thing_to_remember}"
+      res.send "Got it. #{thing_to_remember_as} = #{thing_to_remember}"
 
     # else
       # res.reply "Well, I already got #{thing_to_remember_as} remembered as #{thing_to_remember}."
