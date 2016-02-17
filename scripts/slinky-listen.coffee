@@ -22,7 +22,7 @@ module.exports = (robot) ->
   # )
   robot.hear /.*/i, (res) ->
     if inhibitions(0.05)
-      res.reply res.random heckles["#{res.user.name}"]
+      res.reply res.random heckles["#{res.user.name}"]+" with probability under #{robot.brain.get('pep')/100*0.05}"
 
   # Heckles speechifying.
   # robot.listen(

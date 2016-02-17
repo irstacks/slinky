@@ -8,6 +8,10 @@ module.exports = (robot) ->
       res.send "Who you calling 'slow'?"
     , 60 * 1000
 
+  # Is forthwright.
+  robot.respond /what are you hearing/i, (res) ->
+    res.send "#{res}"
+
   # Is clever.
   # Rememberer.
   robot.respond /remember+( that)?( the)? (.*) (is|are|as|equals) (.*)/i, (res) ->
