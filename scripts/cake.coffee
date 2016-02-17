@@ -26,10 +26,10 @@ module.exports = (robot) ->
     res.send "Pep level set to #{pep_lev}."
 
   # Pep level turn down.
-  robot.respond /pip(|e) down|quiet|(s|)hush|\bsh\b|less pep/i, (res) ->
+  robot.respond /pip(|e) down|quiet|(s|)hush|\bsh\b|less pep|pep (down|less)/i, (res) ->
     current_pep = robot.brain.get('pep')
     robot.brain.set 'pep', current_pep*0.6
-    res.send "OK. Pep level turned down."
+    res.send "OK. Pep level turned down to #{current_pep*0.6}."
 
   # Turnt up to what.
   robot.respond /(pip(|e)|speak) up|be louder|ratchet|more pep|pep up|.*(beer|tequila)/i, (res) ->
@@ -46,7 +46,7 @@ module.exports = (robot) ->
       res.send "OK. Current pep set to #{current_pep*1.15}"
 
   # Manners and get pep levelers.
-  robot.respond /(((what(|\'s)|where(|'s))(are|is|)(your|)).+(manners|pep)|pep level|peppiness)|^pep$/i, (res) ->
+  robot.respond /(((what(|\'s)|where(|'s))(are|is|)(your|)).+(manners|pep)|pep level|peppiness)|(^|\s)^pep(\s|$)$/i, (res) ->
     current_pep = robot.brain.get('pep')
     res.send "Pep level set to #{current_pep}."
 

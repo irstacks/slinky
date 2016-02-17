@@ -139,7 +139,7 @@ module.exports = (robot) ->
       res.send res.random feelings.on_asap
 
   # Is thirsty.
-  robot.hear /drink|drinks|beverage|beverages|bevy|bevies|beer|shots|whiskey/i, (res) ->
+  robot.hear /drink(|s)|beverage(|s)|bev(y|ies)|beer|shot(|s)|whiskey/i, (res) ->
     if inhibitions(.9)
       res.send res.random feelings.on_drinks
 
