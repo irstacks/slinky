@@ -47,11 +47,10 @@ module.exports = (robot) ->
       # res.reply "Well, I already got #{thing_to_remember_as} remembered as #{thing_to_remember}."
 
   # Remembering.
-  robot.respond /what (is|are)+( the)? (.*)/i, (res) ->
+  robot.respond /what(s|'s| is| are)+( the)? (.*)[?]?/i, (res) ->
     thing_to_be_remembered = res.match[3]
     thing = robot.brain.get(thing_to_be_remembered)
     res.send "#{thing}"
-
 
   # Riddlers.
   robot.respond /play with me/i, (msg) ->
