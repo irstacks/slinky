@@ -21,7 +21,10 @@ module.exports = (robot) ->
 
   inhibitions = (importanceBias) ->
     peppiness_level = robot.brain.get('pep')
-    if Math.random() < peppiness_level/100*importanceBias # ie 50/100 * .8
+    calculated_pep = peppiness_level/100*importanceBias
+    rand = Math.random()
+    if rand < calculated_pep # ie 50/100 * .8
+      # console.log "Chances were " + rand + "would be < " + calculated_pep
       return true
     else
       return false
