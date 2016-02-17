@@ -10,7 +10,8 @@ module.exports = (robot) ->
 
   # Is forthwright.
   robot.respond /what are you hearing/i, (res) ->
-    res.send "#{res}"
+    heard = JSON.parse(res)
+    res.send "#{heard}"
 
   # Is clever.
   # Rememberer.
