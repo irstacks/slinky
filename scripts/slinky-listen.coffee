@@ -34,7 +34,7 @@ module.exports = (robot) ->
   #     response.send response.random heckles.loquacious_people
   # )
   robot.hear /.*/i, (res) ->
-    if res.text.length > 200 and inhibitions(0.1)
+    if (res.length > 200 and inhibitions(0.1))
       res.send res.random heckles.loquacious_people
 
   # Heckles at liberty.
