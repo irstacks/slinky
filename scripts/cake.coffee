@@ -46,7 +46,7 @@ module.exports = (robot) ->
       res.send "OK. Current pep set to #{current_pep*1.15}"
 
   # Manners.
-  robot.respond /((what|where) (are|is) your|).manners/i, (res) ->
+  robot.respond /((what(|'s)|where) (are|is|) (your|)).(manners|pep)/i, (res) ->
     current_pep = robot.brain.get('pep')
     res.send "Pep level set to #{current_pep}."
 
