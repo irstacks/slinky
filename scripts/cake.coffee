@@ -20,7 +20,7 @@ module.exports = (robot) ->
     res.send "Got it. Pep set to 0."
 
   # Precision pep.
-  robot.respond /((peppy|pep).+(\d+))$/i, (res) ->
+  robot.respond /(set|)(peppy|pep).+(\d+)$/i, (res) ->
     pep_lev = res.match[1] # the number
     robot.brain.set 'pep', pep_lev
     res.send "Pep level set to #{pep_lev}."
@@ -46,7 +46,7 @@ module.exports = (robot) ->
       res.send "OK. Current pep set to #{current_pep*1.15}"
 
   # Manners.
-  robot.respond /((what(|'s)|where) (are|is|) (your|)).(manners|pep)/i, (res) ->
+  robot.respond /((what(|\'s)|where(|'s))(are|is|)(your|)).+(manners|pep)|pep level|peppiness/i, (res) ->
     current_pep = robot.brain.get('pep')
     res.send "Pep level set to #{current_pep}."
 
