@@ -32,7 +32,7 @@ module.exports = (robot) ->
     res.send "OK. Pep level turned down."
 
   # Turnt up to what.
-  robot.respond /(pip(|e)|speak) up|be louder|ratchet|more pep|.*(beer|tequila)/i, (res) ->
+  robot.respond /(pip(|e)|speak) up|be louder|ratchet|more pep|pep up|.*(beer|tequila)/i, (res) ->
     alcohol = res.match[-1]
     current_pep = robot.brain.get('pep')
     if alcohol == 'beer'
@@ -46,8 +46,7 @@ module.exports = (robot) ->
       res.send "OK. Current pep set to #{current_pep*1.15}"
 
   # Manners and get pep levelers.
-  # githooks test
-  robot.respond /((what(|\'s)|where(|'s))(are|is|)(your|)).+(manners|pep)|pep level|peppiness/i, (res) ->
+  robot.respond /(((what(|\'s)|where(|'s))(are|is|)(your|)).+(manners|pep)|pep level|peppiness)|pep/i, (res) ->
     current_pep = robot.brain.get('pep')
     res.send "Pep level set to #{current_pep}."
 
