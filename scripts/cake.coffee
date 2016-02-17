@@ -21,18 +21,18 @@ module.exports = (robot) ->
 
   # Precision pep.
   robot.respond /((peppy|pep).+(\d+))$/i, (res) ->
-    pep_lev = res.match[2] # the number
+    pep_lev = res.match[1] # the number
     robot.brain.set 'pep', pep_lev
     res.send "Pep level set to #{pep_lev}."
 
   # Pep level turn down.
-  robot.respond /pip(|e) down|quiet|(s|)hush|\bsh\b/i, (res) ->
+  robot.respond /pip(|e) down|quiet|(s|)hush|\bsh\b|less pep/i, (res) ->
     current_pep = robot.brain.get('pep')
     robot.brain.set 'pep', current_pep*0.6
     res.send "OK. Pep level turned down."
 
   # Turnt up to what.
-  robot.respond /(pip(|e)|speak) up|be louder|.*(beer|tequila)/i, (res) ->
+  robot.respond /(pip(|e)|speak) up|be louder|ratchet|more pep|.*(beer|tequila)/i, (res) ->
     alcohol = res.match[-1]
     current_pep = robot.brain.get('pep')
     if alcohol == 'beer'

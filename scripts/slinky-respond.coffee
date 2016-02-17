@@ -21,10 +21,10 @@ module.exports = (robot) ->
       robot.brain.set thing_to_remember_as, thing_to_remember
       res.reply "OK, I have #{thing_to_remember_as} down as #{thing_to_remember}.\nCarry on."
     else
-      res.reply "OK, but be advised: #{thing_to_remember_as} used to be #{thing_to_remember}"
+      res.reply "OK, but be advised: #{thing_to_remember_as} used to be #{robot.brain.get(thing_to_remember_as)}"
       res.send "Updating..."
       robot.brain.set thing_to_remember_as, thing_to_remember
-      res.send "Got it. #{thing_to_remember_as} = #{thing_to_remember}"
+      res.send "Got it. #{thing_to_remember_as} is #{thing_to_remember}"
 
     # else
       # res.reply "Well, I already got #{thing_to_remember_as} remembered as #{thing_to_remember}."
