@@ -20,8 +20,8 @@ module.exports = (robot) ->
     res.send "Got it. Pep set to 0."
 
   # Precision pep.
-  robot.respond /(set|)(peppy|pep).+(\d+)$/i, (res) ->
-    pep_lev = res.match[1] # the number
+  robot.respond /(set|)(peppy|pep(|piness)).+(\d+)$/i, (res) ->
+    pep_lev = res.match[-1] # the number is last match arg
     robot.brain.set 'pep', pep_lev
     res.send "Pep level set to #{pep_lev}."
 
@@ -36,20 +36,19 @@ module.exports = (robot) ->
     alcohol = res.match[-1]
     current_pep = robot.brain.get('pep')
     if alcohol == 'beer'
-      robot.brain.set 'pep', current_pep*1.3
-      res.send "Delicious. Current pep set to #{current_pep*1.2}"
+      robot.brain.set 'pep', current_pep*1.4
+      res.send "Delicious. Current pep set to #{robot.brain.get('pep')}"
     if alcohol == 'tequila'
-      robot.brain.set 'pep', current_pep*1.6
-      res.send "Tequila! My favorite. Current pep set to #{current_pep*1.6}"
+      robot.brain.set 'pep', current_pep*2
+      res.send "Tequila! My favorite. Current pep set to #{robot.brain.get('pep')}"
     else
-      robot.brain.set 'pep', current_pep*1.15
-      res.send "OK. Current pep set to #{current_pep*1.15}"
+      robot.brain.set 'pep', current_pep*1.2
+      res.send "OK. Current pep set to #{robot.brain.get('pep')}"
 
   # Manners and get pep levelers.
   robot.respond /(((what(|\'s)|where(|'s)|how)(are|is|)(your|)).+(manners|pep)|pep level|peppiness|^manners$)/i, (res) ->
     current_pep = robot.brain.get('pep')
     res.send "Pep level set to #{current_pep}."
-
 
   # General borkenness computer.
   # By the way this script is loaded first because of the alphabet.

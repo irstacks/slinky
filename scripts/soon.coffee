@@ -48,5 +48,18 @@ images = [
 ]
 
 module.exports = (robot) ->
+
+  inhibitions = (importanceBias) ->
+    peppiness_level = parseFloat(robot.brain.get('pep'))
+    calculated_pep = peppiness_level/100.0*importanceBias
+    rand = Math.random()
+    if rand < calculated_pep # ie 50/100 * .8
+      # console.log "Chances were " + rand + "would be < " + calculated_pep
+      return true
+    else
+      return false
+
+
   robot.hear /\bso[o]+n\b/i, (msg) ->
-    msg.send msg.random images
+    if inhibitions(0.6)
+      msg.send msg.random images
