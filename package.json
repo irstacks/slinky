@@ -23,7 +23,8 @@
     "hubot-slack": "^3.4.2",
     "hubot-tweets": "0.0.1",
     "hubot-victory": ">= 0.0.0",
-    "twit": "^1.1.20"
+    "twit": "^1.1.20",
+    "cleverbot-node": "0.2.1"
   },
   "engines": {
     "node": "0.10.x"

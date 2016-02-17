@@ -15,11 +15,11 @@
 #   ajacksified
 #   Stephen Price <steeef@gmail.com>
 
-# cleverbot = require('cleverbot-node')
+cleverbot = require('cleverbot-node')
 
-# module.exports = (robot) ->
-#   c = new cleverbot()
+module.exports = (robot) ->
+  c = new cleverbot()
 
-#   robot.respond /c (.*)/i, (msg) ->
-#     data = msg.match[1].trim()
-#     cleverbot.prepare(( -> c.write(data, (c) => msg.send(c.message))))
+  robot.respond /- (.*)/i, (msg) ->
+    data = msg.match[1].trim()
+    cleverbot.prepare(( -> c.write(data, (c) => msg.send(c.message))))
