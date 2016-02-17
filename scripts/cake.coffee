@@ -45,7 +45,8 @@ module.exports = (robot) ->
       robot.brain.set 'pep', current_pep*1.15
       res.send "OK. Current pep set to #{current_pep*1.15}"
 
-  # Manners and get pep levelerssss.
+  # Manners and get pep levelers.
+  # githooks test
   robot.respond /((what(|\'s)|where(|'s))(are|is|)(your|)).+(manners|pep)|pep level|peppiness/i, (res) ->
     current_pep = robot.brain.get('pep')
     res.send "Pep level set to #{current_pep}."
