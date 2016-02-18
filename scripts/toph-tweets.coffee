@@ -46,25 +46,25 @@ whatWouldTophTweet = (msg) ->
     return msg.send "No results returned!" unless statuses?.length
 
     # get tweet that is not talking directly to someone or RT-ing
-    randomTweet = ""
-    randomIndex = 0
+    random_tweet = ""
+    random_index = 0
     pattern = /^(\@|RT)/i # text begins with @
 
     getARandomTophTweet = ->
       random_index = Math.floor(Math.random() * statuses.length)
-      randomTweet = statuses[random_index]
+      random_tweet = statuses[random_index]
 
     # if at first you don't succeed...
     getARandomTophTweet()
 
     # try try again
-    while randomTweet.text.match pattern
-      if randomTweet.text.match pattern
+    while random_tweet.text.match pattern
+      if random_tweet.text.match pattern
         getARandomTophTweet()
       else
         break
 
-    return msg.send "Number #{randomIndex} from Toph's last #{count} tweets ->\n#{randomTweet.text}"
+    return msg.send "Number #{random_index} from Toph's last #{count} tweets ->\n#{random_tweet.text}"
 
 module.exports = (robot) ->
 
