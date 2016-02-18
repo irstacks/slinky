@@ -49,7 +49,8 @@ whatWouldTophTweet = (msg) ->
     random_tweet = ""
     random_index = 0
     caught_statuses_length = statuses.length
-    pattern = /^(\@|RT)/i # text begins with @
+    # pattern = /^(\@|RT)/i # text begins with @
+    pattern = /^(asdfasdf)/i
 
     getARandomTophTweet = ->
       random_index = Math.floor(Math.random() * statuses.length)
