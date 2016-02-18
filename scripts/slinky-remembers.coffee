@@ -117,7 +117,7 @@ module.exports = (robot) ->
 
   # Remove his memory.
   robot.respond /(memory )?(delete |forget )(.+)/i, (msg) ->
-    msg.reply factoids.delFactoid msg.match[res.match.length-1]
+    msg.reply factoids.delFactoid msg.match[msg.match.length-1]
 
   # Rememberer catcher for implanting and retrieving memories.
   robot.respond /remember|what/i, (res) ->
