@@ -1,22 +1,17 @@
-# Description:
-#   Create and search for tweets on Twitter.
-#
-# Dependencies:
-#   "twit": "1.1.x"
+# Description
+#   grab a random tweet from a random twit
 #
 # Configuration:
-#   HUBOT_TWITTER_CONSUMER_KEY
-#   HUBOT_TWITTER_CONSUMER_SECRET
-#   HUBOT_TWITTER_ACCESS_TOKEN
-#   HUBOT_TWITTER_ACCESS_TOKEN_SECRET
+#   LIST_OF_ENV_VARS_TO_SET
 #
 # Commands:
-#   hubot twitter <command> <query> - Search Twitter for a query
-#   wwtt? - Find out what Toph would tweet.
+#   wwtt? - grab a random tweet from toph's last 100 tweets
+#
+# Notes:
+#   <optional notes required for the script>
 #
 # Author:
-#   gkoo
-#
+#   Mr. Is <isaac.ardis@gmail.com>
 
 Twit = require 'twit'
 

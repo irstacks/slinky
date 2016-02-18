@@ -9,7 +9,7 @@
 #   None
 #
 # Commands:
-#   hubot c <input>
+#   hubot , <input> - slinky the human will chat with you
 #
 # Author:
 #   ajacksified

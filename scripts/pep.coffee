@@ -1,4 +1,23 @@
-
+# Description
+#   Has adjustable pep.
+#
+# Configuration:
+#   LIST_OF_ENV_VARS_TO_SET
+#
+# Commands:
+#   hubot go - pep = 100, aka 0 inhibitions
+#   hubot slow - pep = 50, aka some inhibitions, sort of
+#   hubot stop - pep = 0, well behaved
+#   hubot set <pep|peppiness> ## - manual adjust pep, 0-100
+#   hubot <pip(|e) down|quiet|(s|)hush|\bsh\b|less pep|pep (down|less)> - 40% less pep
+#   hubot <(pip(|e)|speak) up|be louder|ratchet|more pep|pep up|.*(beer|tequila)> - 20%-100% more pep
+#   hubot <(((what(|\'s)|where(|'s)|how)(are|is|)(your|)).+(manners|pep)|pep level|peppiness|^manners$)> - show current pep level
+#
+# Notes:
+#   <optional notes required for the script>
+#
+# Author:
+#   Mr. Is <isaac.ardis@gmail.com>
 
 module.exports = (robot) ->
 
@@ -53,16 +72,7 @@ module.exports = (robot) ->
     current_pep = robot.brain.get('pep')
     res.send "Pep level set to #{current_pep}."
 
-  # General borkenness computer.
-  # By the way this script is loaded first because of the alphabet.
-  # This is the last time I write a useless comment to test a git hook.
-  # Almost the last time.
-  # Come on.
-  robot.error (err, res) ->
-    robot.logger.error "DOES NOT COMPUTE"
 
-    if res?
-      res.reply "DOES NOT COMPUTE"
 
 
 

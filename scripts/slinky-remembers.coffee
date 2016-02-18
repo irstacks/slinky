@@ -10,18 +10,16 @@
 #   None
 #
 # Commands:
-#   ~<factoid> is <some phrase, link, whatever> - Creates a factoid
-#   ~<factoid> is also <some phrase, link, whatever> - Updates a factoid.
-#   ~<factoid> - Prints the factoid, if it exists. Otherwise tells you there is no factoid
-#   ~tell <user> about <factoid> - Tells the user about a factoid, if it exists
-#   ~~<user> <factoid> - Same as ~tell, less typing
-#   <factoid>? - Same as ~<factoid> except for there is no response if not found
-#   hubot no, <factoid> is <some phrase, link, whatever> - Replaces the full definition of a factoid
-#   hubot factoids list - List all factoids
-#   hubot factoid delete "<factoid>" - delete a factoid
+#   hubot remember <that?|the?> ___ <is|are|as|equals> ___ - remember stuff (add)
+#   hubot remember <that?|the?> ___ also <is|are|as|equals> ___ - remember more stuff (append)
+#   hubot what<s|'s| is| are| were| was( the)?> ___ - recall stuff (get)
+#   hubot <memory ?> <delete/forget> ___ - forget stuff (delete)
+#   hubot no, ___ is ___ - alter memory (update)
+#   ___? - chime in if he knows anything about ___?
+#   hubot <remember|tell me|list)?> <everything|what do you know|show|> memor(y|ized) - spill the beans
 #
 # Author:
-#   arthurkalm
+#   arthurkalm and mr is
 
 class Factoids
   constructor: (@robot) ->
