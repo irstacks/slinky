@@ -12,6 +12,7 @@
 #
 # Commands:
 #   hubot twitter <command> <query> - Search Twitter for a query
+#   wwtt? - Find out what Toph would tweet.
 #
 # Author:
 #   gkoo
