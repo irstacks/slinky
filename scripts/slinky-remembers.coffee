@@ -66,7 +66,7 @@ class Factoids
   niceGet: (key) ->
     input = key
     key = key.toLowerCase() unless @cache[key]?
-    @cache[key] or "No memory of #{input}"
+    "#{key} is #{@cache[key]}" or "No memory of #{input}"
 
   get: (key) ->
     key = key.toLowerCase() unless @cache[key]?
