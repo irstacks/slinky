@@ -36,7 +36,7 @@ whatWouldTophTweet = (msg) ->
   username = 'tophtucker' #msg.match[2]
 
   twit = getTwit()
-  count = 1500
+  count = 100
   searchConfig =
     screen_name: username,
     count: count
@@ -48,6 +48,7 @@ whatWouldTophTweet = (msg) ->
     # get tweet that is not talking directly to someone or RT-ing
     random_tweet = ""
     random_index = 0
+    caught_statuses_length = statuses.length
     pattern = /^(\@|RT)/i # text begins with @
 
     getARandomTophTweet = ->
@@ -64,7 +65,7 @@ whatWouldTophTweet = (msg) ->
       else
         break
 
-    return msg.send "Number #{random_index} from Toph's last #{count} tweets ->\n#{random_tweet.text}"
+    return msg.send "Number #{random_index} from Toph's last #{caught_statuses_length} tweets ->\n#{random_tweet.text}"
 
 module.exports = (robot) ->
 
