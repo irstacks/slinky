@@ -112,12 +112,12 @@ module.exports = (robot) ->
     msg.reply factoids.setFactoid msg.match[1], msg.match[2]
 
   # Spill the beans.
-  robot.respond /(remember|tell me) everything|what do you know|memor(y|ized)/i, (msg) ->
+  robot.respond /(remember|tell me|list)?\b(everything|what do you know|show|) memor(y|ized)/i, (msg) ->
     msg.send factoids.list().join('\n')
 
   # Remove his memory.
-  robot.respond /memory? (delete|forget) (|the) (.*)$/i, (msg) ->
-    msg.reply factoids.delFactoid msg.match[2]
+  robot.respond /(memory )?(delete |forget )(.+)/i, (msg) ->
+    msg.reply factoids.delFactoid msg.match[res.match.length-1]
 
   # Rememberer catcher for implanting and retrieving memories.
   robot.respond /remember|what/i, (res) ->
