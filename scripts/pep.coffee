@@ -20,8 +20,11 @@ module.exports = (robot) ->
     res.send "Got it. Pep set to 0."
 
   # Precision pep.
-  robot.respond /(set|)(peppy|pep(|piness)).+(\d+)$/i, (res) ->
-    pep_lev = res.match[-1] # the number is last match arg
+  # [1,2,3,4,5]
+  # arr.length = 5
+  # last el = arr[4]
+  robot.respond /(^set\s)?(peppy|pep(|piness))\s(\d+)$/i, (res) ->
+    pep_lev = res.match[match.length-1] # the number is last match arg
     robot.brain.set 'pep', pep_lev
     res.send "Pep level set to #{pep_lev}."
 
