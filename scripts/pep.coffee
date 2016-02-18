@@ -23,7 +23,7 @@ module.exports = (robot) ->
   # [1,2,3,4,5]
   # arr.length = 5
   # last el = arr[4]
-  robot.respond /(pep(|py|piness))\s(\d+)$/i, (res) ->
+  robot.respond /(^set\s)(pep(|py|piness))\s(\d+)$/i, (res) ->
     pep_lev = res.match[res.match.length-1] # the number is last match arg
     robot.brain.set 'pep', pep_lev
     res.send "Pep level set to #{pep_lev}."
