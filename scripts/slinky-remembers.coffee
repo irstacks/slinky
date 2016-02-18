@@ -95,8 +95,8 @@ class Factoids
     # Getters.
     # else if match = (/^~tell (.+?) about (.+)/i.exec text) or (/^~~(.+) (.+)/.exec text)
     #   this.tell match[1], match[2]
-    else if match = /what(s|'s| is| are)+( the)? (.*)[?]?/i.exec text
-      this.niceGet match[3]
+    else if match = /what(s|'s| is| are)+( the)? ([\w\d]*)/i.exec text
+      this.niceGet match[match.length-1]
 
 module.exports = (robot) ->
   factoids = new Factoids robot
