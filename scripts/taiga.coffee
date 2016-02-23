@@ -95,9 +95,11 @@ module.exports = (robot) ->
 
     switch resource_type
       when 'us','userstory','userstories'
-        resource_url = '/userstories', gettable_url = 'us'
+        resource_url = '/userstories'
+        gettable_url = 'us'
       when 'task','tasks'
-        resource_url = '/tasks', gettable_url = 'tasks'
+        resource_url = '/tasks'
+        gettable_url = 'tasks'
 
     # Set us ref if there is one and if we're not posting a user story.
     payload.user_story = parseInt(incoming_us) if incoming_us and resource_url is not '/userstories'
@@ -232,8 +234,10 @@ module.exports = (robot) ->
     resource_type = msg.match[1]
 
     switch resource_type
-      when 'us','userstory','userstories' then resource_path = '/userstories'
-      when 'task','tasks' then resource_path = '/tasks'
+      when 'us','userstory','userstories'
+        resource_path = '/userstories'
+      when 'task','tasks'
+        resource_path = '/tasks'
 
     token = getUserToken(msg)
 
