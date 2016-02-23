@@ -16,6 +16,7 @@
   # taiga (task|tasks) edit 52 status done - Edit task by ID.
 
   ##################################################
+module.exports = (robot) ->
 
   getPID = (token, projectSlug) ->
     data = "?project=#{projectSlug}"
