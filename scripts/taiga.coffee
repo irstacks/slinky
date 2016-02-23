@@ -139,6 +139,46 @@ module.exports = (robot) ->
           else
             msg.send "Unable to authenticate"
 
+  robot.hear /taiga get all userstories/i, (msg) ->
+    project = getProject(msg)
+    if not project
+      msg.send project_not_set_msg
+      return
+
+    token = getUserToken(msg)
+
+    if token
+      getAllUserStories(msg, token, project)
+    else
+      data = JSON.stringify({
+        type: "normal",
+        username: username,
+        password: password
+      })
+      robot.http(url + 'auth')
+        .headers('Content-Type': 'application/json')
+        .post(data) (err, res, body) ->
+          data = JSON.parse body
+          token = data.auth_token
+          if token
+            getAllUserStories(msg, token, project)
+          else
+            msg.send "Unable to authenticate"
+
+  getAllUserStories = (msg, token, projectSlug) ->
+    data = "?project=#{projectSlug}"
+    auth = "Bearer #{token}"
+    robot.http(url + "userstories" + data)
+      .headers('Content-Type': 'application/json', 'Authorization': auth)
+      .get() (err, res, body) ->
+        data = JSON.stringify body
+
+        if data
+          # Test to make sure we get data.
+          msg.send data
+
+        else
+          msg.send "Couldn't get data."
 
   submitComment = (msg, token, projectSlug, tid, payload) ->
     chatUsername = msg.message.user.name
