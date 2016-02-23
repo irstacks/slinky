@@ -168,17 +168,31 @@ module.exports = (robot) ->
   getAllUserStories = (msg, token, projectSlug) ->
     data = "?project=#{projectSlug}"
     auth = "Bearer #{token}"
-    robot.http(url + "userstories" + data)
+
+    # Get project id.
+    robot.http(url + 'resolver' + data)
       .headers('Content-Type': 'application/json', 'Authorization': auth)
       .get() (err, res, body) ->
-        data = JSON.stringify body
+        data = JSON.parse body
+        pid = data.project
 
-        if data
-          # Test to make sure we get data.
-          msg.send data
+        if pid
+          data = "?project=#{pid}"
+          robot.http(url + '/userstories' + data)
+            .headers('Content-Type': 'application/json', 'Authorization': auth)
+            .get() (err, res, body) ->
+              data = JSON.stringify body
 
+              if data
+                # Test to make sure we get data.
+                msg.send data
+
+              else
+                msg.send "Couldn't get data for project with id #{pid}."
         else
-          msg.send "Couldn't get data."
+          msg.send "Couldn't get the pid."
+
+
 
   submitComment = (msg, token, projectSlug, tid, payload) ->
     chatUsername = msg.message.user.name
