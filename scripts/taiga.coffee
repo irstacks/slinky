@@ -15,6 +15,8 @@
 #   taiga project <project-slug> - Set taiga project for this channel
 #   taiga auth <username> <password> - Authenticate so that comments from from this user
 #   TG-<REF> <comment> - Send a comment to Taiga. Example `TG-123 I left a comment!` and `TG-123 #done I finished it, I am the best.`
+#   taiga get userstories - Get a list of all open userstories.
+#   taiga post userstory (.*) - Post a userstory with subject ___
 
 #
 # Notes:
@@ -139,7 +141,68 @@ module.exports = (robot) ->
           else
             msg.send "Unable to authenticate"
 
-  robot.hear /taiga get all userstories/i, (msg) ->
+
+  robot.hear /taiga post userstory (.*)/i, (msg) ->
+    incoming_subject = msg.match[1]
+
+    project = getProject(msg)
+    if not project
+      msg.send project_not_set_msg
+      return
+
+    token = getUserToken(msg)
+
+    if token
+      createUserstory(msg, token, project, incoming_subject)
+    else
+      data = JSON.stringify({
+        type: "normal",
+        username: username,
+        password: password
+      })
+      robot.http(url + 'auth')
+        .headers('Content-Type': 'application/json')
+        .post(data) (err, res, body) ->
+          data = JSON.parse body
+          token = data.auth_token
+          if token
+            createUserstory(msg, token, project, incoming_subject)
+          else
+            msg.send "Unable to authenticate"
+
+  createUserstory = (msg, token, projectSlug, subjectable) ->
+    # Use for grabbing resolved project id.
+    data = "?project=#{projectSlug}"
+    auth = "Bearer #{token}"
+
+    # Get project id.
+    robot.http(url + 'resolver' + data)
+      .headers('Content-Type': 'application/json', 'Authorization': auth)
+      .get() (err, res, body) ->
+        data = JSON.parse body
+        pid = data.project
+
+        # If we resolve the project id.
+        if pid
+          postable_obj = {
+            project: pid,
+            subject: subjectable
+          }
+          postable_json = JSON.stringify post_obj
+
+          robot.http(url + '/userstories')
+            .headers('Content-Type': 'application/json', 'Authorization': auth)
+            .post(postable_json) (err, res, body) ->
+              reference = JSON.parse body
+              if err or not reference.id
+                msg.send "Failed to create userstory."
+              else
+                msg.send "Created #{subjectable} as userstory \##{reference.id} ."
+        else
+          msg.send "Couldn't get the pid."
+
+
+  robot.hear /taiga get userstories/i, (msg) ->
     project = getProject(msg)
     if not project
       msg.send project_not_set_msg
@@ -197,9 +260,10 @@ module.exports = (robot) ->
 
   relevantUserstoryInfo = (userstory) ->
     words = ""
-    words += "Subject: " + userstory['subject'] + "\n"
-    words += "  Status: " + userstory['status_extra_info']['name'] + "\n"
-    words += "  Assigned to: " + userstory['assigned_to_extra_info']['full_name_display'] + "\n" if userstory['assigned_to_extra_info']
+    words += userstory['id'] + " - "
+    words += "*" + userstory['subject'] + "* "
+    words += "_" + userstory['status_extra_info']['name'] + "_ "
+    words += "(" + userstory['assigned_to_extra_info']['full_name_display'] + ")" if userstory['assigned_to_extra_info']
 
     return words
 
