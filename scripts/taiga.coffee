@@ -182,40 +182,29 @@ module.exports = (robot) ->
           robot.http(url + '/userstories' + data)
             .headers('Content-Type': 'application/json', 'Authorization': auth)
             .get() (err, res, body) ->
-              data = JSON.parse body
+              userstories = JSON.parse body
 
-              if data
-                words = ""
-                for k, v of data
-                  words += k + ": " + v + "\n"
-                # words = ""
-                # # Test to make sure we get data.
-                # # msg.send data # OK!
-                # for k, v of data
-                #   if k == 'subject'
-                #     words += "Subject:" + v + "\n"
-                #   else if k == 'status_extra_info'
-                #     words += "  Status:" + v["name"] + "\n"
-                #   else if k == 'assigned_to_extra_info'
-                #     words += "  Assigned to:" + v["full_name_display"]
-
-                msg.send words
-
-                ## http://stackoverflow.com/questions/6408726/iterate-over-object-in-coffeescript
-                # Use for x,y of L. Relevant documentation.
-
-                # ages = {}
-                # ages["jim"] = 12
-                # ages["john"] = 7
-
-                # for k,v of ages
-                #   console.log k + " is " + v
+              if userstories
+                msg.send relevantUserstoryInfo(userstory) for userstory in userstories
 
               else
                 msg.send "Couldn't get data for project with id #{pid}."
         else
           msg.send "Couldn't get the pid."
 
+
+  relevantUserstoryInfo = (userstory) ->
+    words = ""
+    for k, v in userstory
+
+      if k == 'subject'
+        words += "Subject:" + v + "\n"
+      else if k == 'status_extra_info'
+        words += "  Status:" + v["name"] + "\n"
+      else if k == 'assigned_to_extra_info'
+        words += "  Assigned to:" + v["full_name_display"]
+
+    return words
 
 
   submitComment = (msg, token, projectSlug, tid, payload) ->
