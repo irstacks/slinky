@@ -15,9 +15,19 @@
 #   taiga project <project-slug> - Set taiga project for this channel
 #   taiga auth <username> <password> - Authenticate so that comments from from this user
 #   TG-<REF> <comment> - Send a comment to Taiga. Example `TG-123 I left a comment!` and `TG-123 #done I finished it, I am the best.`
-#   taiga get userstories - Get a list of all open userstories.
+#
+#   taiga (us|userstory) list all open userstories.
+#   taiga (us|userstory) show 34
+#   taiga (us|userstory) add subject:The beginning of long journey description: The Road goes on.
+#   taiga (us|userstory) edit 34 status close - Edit userstory by ID.
+#
+#   taiga (task|tasks) list - List all open tasks.
+#   taiga (task|tasks) us:34 - List all tasks for userstory by ID.
+#   taiga (task|tasks) add us:34 subject:Do it. description:And do it good.
+#   taiga (task|tasks) edit 52 status done - Edit task by ID.
+#
 #   taiga post userstory (.*) - Post a userstory with subject ___
-
+#
 #
 # Notes:
 #   Environment variables are optional.
@@ -35,6 +45,9 @@
 
 
 module.exports = (robot) ->
+
+  ####### Inherited from Mr. Burke.
+
   username = process.env.HUBOT_TAIGA_USERNAME
   password = process.env.HUBOT_TAIGA_PASSWORD
   global_project = process.env.HUBOT_TAIGA_PROJECT
@@ -143,6 +156,8 @@ module.exports = (robot) ->
             msg.send "Unable to authenticate"
 
 
+  ########## New
+
   robot.hear /taiga post userstory (.*)/i, (msg) ->
     incoming_subject = msg.match[1]
 
@@ -201,76 +216,6 @@ module.exports = (robot) ->
                 msg.send "Created <#{taiga_tree_url}#{getProject(msg)}/us/#{reference.id}|#{subjectable}>."
         else
           msg.send "Couldn't get the pid."
-
-
-  robot.hear /taiga get userstories/i, (msg) ->
-    project = getProject(msg)
-    if not project
-      msg.send project_not_set_msg
-      return
-
-    token = getUserToken(msg)
-
-    if token
-      getAllUserStories(msg, token, project)
-    else
-      data = JSON.stringify({
-        type: "normal",
-        username: username,
-        password: password
-      })
-      robot.http(url + 'auth')
-        .headers('Content-Type': 'application/json')
-        .post(data) (err, res, body) ->
-          data = JSON.parse body
-          token = data.auth_token
-          if token
-            getAllUserStories(msg, token, project)
-          else
-            msg.send "Unable to authenticate"
-
-  getAllUserStories = (msg, token, projectSlug) ->
-    data = "?project=#{projectSlug}"
-    auth = "Bearer #{token}"
-
-    # Get project id.
-    robot.http(url + 'resolver' + data)
-      .headers('Content-Type': 'application/json', 'Authorization': auth)
-      .get() (err, res, body) ->
-        data = JSON.parse body
-        pid = data.project
-
-        if pid
-          # Get list userstories for project where status_is_closed=false.
-          data = "?project=#{pid}&status__is_closed=false"
-          robot.http(url + '/userstories' + data)
-            .headers('Content-Type': 'application/json', 'Authorization': auth)
-            .get() (err, res, body) ->
-              userstories = JSON.parse body
-
-              if userstories
-                say = ""
-                say += relevantUserstoryInfo(userstory) for userstory in userstories
-                msg.send say
-
-              else
-                msg.send "Couldn't get data for project with id #{pid}."
-        else
-          msg.send "Couldn't get the pid."
-
-
-  relevantUserstoryInfo = (userstory) ->
-    words = ""
-    words += userstory['id'] + " - "
-    words += "*" + userstory['subject'] + "* "
-    words += "_" + userstory['status_extra_info']['name'] + "_ "
-    if userstory['assigned_to_extra_info']
-      words += "(" + userstory['assigned_to_extra_info']['full_name_display'] + ")" + "\n"
-    else
-      words += "\n"
-
-    return words
-
 
   submitComment = (msg, token, projectSlug, tid, payload) ->
     chatUsername = msg.message.user.name
@@ -379,31 +324,7 @@ module.exports = (robot) ->
 
 
   #####################################################
-
-  # getPID = (token, projectSlug) ->
-  #   data = "?project=#{projectSlug}"
-  #   auth = "Bearer #{token}"
-
-  #   # Get project id.
-  #   robot.http(url + 'resolver' + data)
-  #     .headers('Content-Type': 'application/json', 'Authorization': auth)
-  #     .get() (err, res, body) ->
-  #       data = JSON.parse body
-  #       pid = data.project
-  #       return pid
-
-  # getBotToken = () ->
-  #   data = JSON.stringify({
-  #     type: "normal",
-  #     username: username,
-  #     password: password
-  #   })
-  #   robot.http(url + 'auth')
-  #     .headers('Content-Type': 'application/json')
-  #     .post(data) (err, res, body) ->
-  #       data = JSON.parse body
-  #       token = data.auth_token
-  #       return token
+  # A little abstracter.
 
   # Get all tasks or userstories.
   robot.hear /taiga (us|userstory|userstories|task|tasks) list/i, (msg) ->
@@ -471,10 +392,13 @@ module.exports = (robot) ->
 
     switch resource_path
       when '/userstories'
-        words += "us:" + item['id'] + " - "
+        words += "*Open userstories:*\n"
+        words += "us:" + item['id']
+        words += " (" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
+        words += " - "
         words += "*" + item['subject'] + "* "
         words += "_" + item['status_extra_info']['name'] + "_ "
-        words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
+
         if item['description']
           words += "\n"
           words += "_" + item["description"] + "_"
@@ -482,7 +406,8 @@ module.exports = (robot) ->
         else
           words += "\n"
       when '/tasks'
-        words += "task:" + item['id'] + " - "
+        words += "*Open tasks:*\n"
+        words += "us:" + (item['project'] || "?") + "/task:" + item['id'] + " - "
         words += "*" + item['subject'] + "* "
         words += "_" + item['status_extra_info']['name'] + "_ "
         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
