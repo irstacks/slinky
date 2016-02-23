@@ -40,6 +40,7 @@ module.exports = (robot) ->
   global_project = process.env.HUBOT_TAIGA_PROJECT
   project_not_set_msg = "Set project with `taiga project PROJECT_SLUG`"
   url = process.env.HUBOT_TAIGA_URL or "https://api.taiga.io/api/v1/"
+  taiga_tree_url = "https://tree.taiga.io/project/"
   redis_prefix = 'taiga_'
   statusPattern = /(#[^\s]+)/i
 
@@ -197,7 +198,7 @@ module.exports = (robot) ->
               if err or not reference.id
                 msg.send "Failed to create userstory."
               else
-                msg.send "Created #{subjectable} as userstory \##{reference.id} ."
+                msg.send "Created <#{taiga_tree_url}#{getProject(msg)}/us/#{reference.id}|#{subjectable}>."
         else
           msg.send "Couldn't get the pid."
 
