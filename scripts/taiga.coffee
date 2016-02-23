@@ -248,7 +248,7 @@ module.exports = (robot) ->
 
       when '/tasks'
 
-        words += "us:" + (item['project'] || "?") + "/task:" + item['id'] + " - "
+        words += "us:" + (item['user_story'] || "?") + "/task:" + item['id'] + " - "
         words += "*" + item['subject'] + "* "
         words += "_" + item['status_extra_info']['name'] + "_ "
         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
