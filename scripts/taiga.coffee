@@ -188,7 +188,7 @@ module.exports = (robot) ->
             project: pid,
             subject: subjectable
           }
-          postable_json = JSON.stringify post_obj
+          postable_json = JSON.stringify postable_obj
 
           robot.http(url + '/userstories')
             .headers('Content-Type': 'application/json', 'Authorization': auth)
@@ -263,7 +263,10 @@ module.exports = (robot) ->
     words += userstory['id'] + " - "
     words += "*" + userstory['subject'] + "* "
     words += "_" + userstory['status_extra_info']['name'] + "_ "
-    words += "(" + userstory['assigned_to_extra_info']['full_name_display'] + ")" if userstory['assigned_to_extra_info']
+    if userstory['assigned_to_extra_info']
+      words += "(" + userstory['assigned_to_extra_info']['full_name_display'] + ")" + "\n"
+    else
+      words += "\n"
 
     return words
 
