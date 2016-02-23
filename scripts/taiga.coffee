@@ -46,7 +46,7 @@
 
 module.exports = (robot) ->
 
-  ####### Inherited from Mr. Burke.
+  ####### Helpers and init inherited from Mr. Burke.
 
   username = process.env.HUBOT_TAIGA_USERNAME
   password = process.env.HUBOT_TAIGA_PASSWORD
@@ -79,6 +79,246 @@ module.exports = (robot) ->
     room = msg.message.room
     project_key + room
 
+
+  ########## \ia
+
+  robot.hear /taiga (us|userstory|userstories|task|tasks) add( us\:(\d+))? (subject:(.*)) (description:(.*))/i, (msg) ->
+    resource_type = msg.match[1]
+    incoming_us = msg.match[3]
+    incoming_subject = msg.match[5]
+    incoming_description = msg.match[7]
+
+    payload = {
+      subject: incoming_subject,
+      description: incoming_description
+    }
+
+    switch resource_type
+      when 'us','userstory','userstories'
+        resource_url = '/userstories', gettable_url = 'us'
+      when 'task','tasks'
+        resource_url = '/tasks', gettable_url = 'tasks'
+
+    # Set us ref if there is one and if we're not posting a user story.
+    payload.user_story = parseInt(incoming_us) if incoming_us and resource_url is not '/userstories'
+
+    project = getProject(msg)
+    if not project
+      msg.send project_not_set_msg
+      return
+
+    token = getUserToken(msg)
+
+    if token
+      postResource(msg, token, project, resource_url, gettable_url, payload)
+    else
+      data = JSON.stringify({
+        type: "normal",
+        username: username,
+        password: password
+      })
+      robot.http(url + 'auth')
+        .headers('Content-Type': 'application/json')
+        .post(data) (err, res, body) ->
+          data = JSON.parse body
+          token = data.auth_token
+          if token
+            postResource(msg, token, project, resource_url, gettable_url, payload)
+          else
+            msg.send "Unable to authenticate"
+
+  postResource = (msg, token, projectSlug, resource_url, gettable_url, payload) ->
+    # Use for grabbing resolved project id.
+    data = "?project=#{projectSlug}"
+    auth = "Bearer #{token}"
+
+    # Get project id.
+    robot.http(url + 'resolver' + data)
+      .headers('Content-Type': 'application/json', 'Authorization': auth)
+      .get() (err, res, body) ->
+        data = JSON.parse body
+        pid = data.project
+
+        # If we resolve the project id.
+        if pid
+          payload.project = pid
+          postable_json = JSON.stringify payload
+
+          robot.http(url + resource_url)
+            .headers('Content-Type': 'application/json', 'Authorization': auth)
+            .post(postable_json) (err, res, body) ->
+              reference = JSON.parse body
+              if err or not reference.id
+                msg.send "Failed to create the resource."
+              else
+                msg.send "Created <#{taiga_tree_url}#{getProject(msg)}/#{gettable_url}/#{reference.id}|#{payload['subject']}>."
+        else
+          msg.send "Couldn't get the pid."
+
+
+  # Being replaced...
+  # robot.hear /taiga (task|tasks) add (.*)/i, (msg) ->
+  #   incoming_subject = msg.match[2]
+
+  #   project = getProject(msg)
+  #   if not project
+  #     msg.send project_not_set_msg
+  #     return
+
+  #   token = getUserToken(msg)
+
+  #   if token
+  #     createUserstory(msg, token, project, incoming_subject)
+  #   else
+  #     data = JSON.stringify({
+  #       type: "normal",
+  #       username: username,
+  #       password: password
+  #     })
+  #     robot.http(url + 'auth')
+  #       .headers('Content-Type': 'application/json')
+  #       .post(data) (err, res, body) ->
+  #         data = JSON.parse body
+  #         token = data.auth_token
+  #         if token
+  #           createUserstory(msg, token, project, incoming_subject)
+  #         else
+  #           msg.send "Unable to authenticate"
+
+  # createUserstory = (msg, token, projectSlug, subjectable) ->
+  #   # Use for grabbing resolved project id.
+  #   data = "?project=#{projectSlug}"
+  #   auth = "Bearer #{token}"
+
+  #   # Get project id.
+  #   robot.http(url + 'resolver' + data)
+  #     .headers('Content-Type': 'application/json', 'Authorization': auth)
+  #     .get() (err, res, body) ->
+  #       data = JSON.parse body
+  #       pid = data.project
+
+  #       # If we resolve the project id.
+  #       if pid
+  #         postable_obj = {
+  #           project: pid,
+  #           subject: subjectable
+  #         }
+  #         postable_json = JSON.stringify postable_obj
+
+  #         robot.http(url + '/userstories')
+  #           .headers('Content-Type': 'application/json', 'Authorization': auth)
+  #           .post(postable_json) (err, res, body) ->
+  #             reference = JSON.parse body
+  #             if err or not reference.id
+  #               msg.send "Failed to create userstory."
+  #             else
+  #               msg.send "Created <#{taiga_tree_url}#{getProject(msg)}/us/#{reference.id}|#{subjectable}>."
+  #       else
+  #         msg.send "Couldn't get the pid."
+
+
+
+
+  #####################################################
+  # A little abstracter.
+
+  # Get all tasks or userstories.
+  robot.hear /taiga (us|userstory|userstories|task|tasks) list/i, (msg) ->
+    project = getProject(msg)
+    if not project
+      msg.send project_not_set_msg
+      return
+
+    resource_type = msg.match[1]
+
+    switch resource_type
+      when 'us','userstory','userstories' then resource_path = '/userstories'
+      when 'task','tasks' then resource_path = '/tasks'
+
+    token = getUserToken(msg)
+
+    if token
+      getAllResource(msg, token, project, resource_path)
+    else
+      data = JSON.stringify({
+        type: "normal",
+        username: username,
+        password: password
+      })
+      robot.http(url + 'auth')
+        .headers('Content-Type': 'application/json')
+        .post(data) (err, res, body) ->
+          data = JSON.parse body
+          token = data.auth_token
+          if token
+            getAllResource(msg, token, project, resource_path)
+          else
+            msg.send "Unable to authenticate"
+
+  getAllResource = (msg, token, projectSlug, resource_path) ->
+    data = "?project=#{projectSlug}"
+    auth = "Bearer #{token}"
+
+    # Get project id.
+    robot.http(url + 'resolver' + data)
+      .headers('Content-Type': 'application/json', 'Authorization': auth)
+      .get() (err, res, body) ->
+        data = JSON.parse body
+        pid = data.project
+        if pid
+          # Get list userstories/tasks for project where status_is_closed=false.
+          data = "?project=#{pid}&status__is_closed=false"
+          robot.http(url + resource_path + data)
+            .headers('Content-Type': 'application/json', 'Authorization': auth)
+            .get() (err, res, body) ->
+              response_list = JSON.parse body
+
+              if response_list
+                say = ""
+                say += formatted_reponse(item, resource_path) for item in response_list
+                msg.send say
+
+              else
+                msg.send "Couldn't get data for project with id #{pid}."
+        else
+          msg.send "Couldn't get the pid."
+
+  formatted_reponse = (item, resource_path) ->
+    words = ""
+
+    switch resource_path
+      when '/userstories'
+        words += "*Open userstories:*\n"
+        words += "us:" + item['id']
+        words += " (" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
+        words += " - "
+        words += "*" + item['subject'] + "* "
+        words += "_" + item['status_extra_info']['name'] + "_ "
+
+        if item['description']
+          words += "\n"
+          words += "_" + item["description"] + "_"
+          words += "\n"
+        else
+          words += "\n"
+      when '/tasks'
+        words += "*Open tasks:*\n"
+        words += "us:" + (item['project'] || "?") + "/task:" + item['id'] + " - "
+        words += "*" + item['subject'] + "* "
+        words += "_" + item['status_extra_info']['name'] + "_ "
+        words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
+        if item['description']
+          words += "\n"
+          words += "_" + item["description"] + "_"
+          words += "\n"
+        else
+          words += "\n"
+
+    return words
+
+
+
+  ######## Inherited from D Burke.
 
   robot.hear /taiga info/i, (msg) ->
     project = getProject(msg)
@@ -154,68 +394,6 @@ module.exports = (robot) ->
             submitComment(msg, token, project, tid, payload)
           else
             msg.send "Unable to authenticate"
-
-
-  ########## New
-
-  robot.hear /taiga post userstory (.*)/i, (msg) ->
-    incoming_subject = msg.match[1]
-
-    project = getProject(msg)
-    if not project
-      msg.send project_not_set_msg
-      return
-
-    token = getUserToken(msg)
-
-    if token
-      createUserstory(msg, token, project, incoming_subject)
-    else
-      data = JSON.stringify({
-        type: "normal",
-        username: username,
-        password: password
-      })
-      robot.http(url + 'auth')
-        .headers('Content-Type': 'application/json')
-        .post(data) (err, res, body) ->
-          data = JSON.parse body
-          token = data.auth_token
-          if token
-            createUserstory(msg, token, project, incoming_subject)
-          else
-            msg.send "Unable to authenticate"
-
-  createUserstory = (msg, token, projectSlug, subjectable) ->
-    # Use for grabbing resolved project id.
-    data = "?project=#{projectSlug}"
-    auth = "Bearer #{token}"
-
-    # Get project id.
-    robot.http(url + 'resolver' + data)
-      .headers('Content-Type': 'application/json', 'Authorization': auth)
-      .get() (err, res, body) ->
-        data = JSON.parse body
-        pid = data.project
-
-        # If we resolve the project id.
-        if pid
-          postable_obj = {
-            project: pid,
-            subject: subjectable
-          }
-          postable_json = JSON.stringify postable_obj
-
-          robot.http(url + '/userstories')
-            .headers('Content-Type': 'application/json', 'Authorization': auth)
-            .post(postable_json) (err, res, body) ->
-              reference = JSON.parse body
-              if err or not reference.id
-                msg.send "Failed to create userstory."
-              else
-                msg.send "Created <#{taiga_tree_url}#{getProject(msg)}/us/#{reference.id}|#{subjectable}>."
-        else
-          msg.send "Couldn't get the pid."
 
   submitComment = (msg, token, projectSlug, tid, payload) ->
     chatUsername = msg.message.user.name
@@ -321,101 +499,3 @@ module.exports = (robot) ->
         reference = JSON.parse body
         if err or not reference.id
           msg.send "Failed to update #{type}"
-
-
-  #####################################################
-  # A little abstracter.
-
-  # Get all tasks or userstories.
-  robot.hear /taiga (us|userstory|userstories|task|tasks) list/i, (msg) ->
-    project = getProject(msg)
-    if not project
-      msg.send project_not_set_msg
-      return
-
-    resource_type = msg.match[1]
-
-    switch resource_type
-      when 'us','userstory','userstories' then resource_path = '/userstories'
-      when 'task','tasks' then resource_path = '/tasks'
-
-    token = getUserToken(msg)
-
-    if token
-      getAllResource(msg, token, project, resource_path)
-    else
-      data = JSON.stringify({
-        type: "normal",
-        username: username,
-        password: password
-      })
-      robot.http(url + 'auth')
-        .headers('Content-Type': 'application/json')
-        .post(data) (err, res, body) ->
-          data = JSON.parse body
-          token = data.auth_token
-          if token
-            getAllResource(msg, token, project, resource_path)
-          else
-            msg.send "Unable to authenticate"
-
-  getAllResource = (msg, token, projectSlug, resource_path) ->
-    data = "?project=#{projectSlug}"
-    auth = "Bearer #{token}"
-
-    # Get project id.
-    robot.http(url + 'resolver' + data)
-      .headers('Content-Type': 'application/json', 'Authorization': auth)
-      .get() (err, res, body) ->
-        data = JSON.parse body
-        pid = data.project
-        if pid
-          # Get list userstories/tasks for project where status_is_closed=false.
-          data = "?project=#{pid}&status__is_closed=false"
-          robot.http(url + resource_path + data)
-            .headers('Content-Type': 'application/json', 'Authorization': auth)
-            .get() (err, res, body) ->
-              response_list = JSON.parse body
-
-              if response_list
-                say = ""
-                say += formatted_reponse(item, resource_path) for item in response_list
-                msg.send say
-
-              else
-                msg.send "Couldn't get data for project with id #{pid}."
-        else
-          msg.send "Couldn't get the pid."
-
-  formatted_reponse = (item, resource_path) ->
-    words = ""
-
-    switch resource_path
-      when '/userstories'
-        words += "*Open userstories:*\n"
-        words += "us:" + item['id']
-        words += " (" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
-        words += " - "
-        words += "*" + item['subject'] + "* "
-        words += "_" + item['status_extra_info']['name'] + "_ "
-
-        if item['description']
-          words += "\n"
-          words += "_" + item["description"] + "_"
-          words += "\n"
-        else
-          words += "\n"
-      when '/tasks'
-        words += "*Open tasks:*\n"
-        words += "us:" + (item['project'] || "?") + "/task:" + item['id'] + " - "
-        words += "*" + item['subject'] + "* "
-        words += "_" + item['status_extra_info']['name'] + "_ "
-        words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
-        if item['description']
-          words += "\n"
-          words += "_" + item["description"] + "_"
-          words += "\n"
-        else
-          words += "\n"
-
-    return words
