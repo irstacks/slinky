@@ -423,13 +423,15 @@ module.exports = (robot) ->
     if token
       getAllResource(msg, token, project, resource_path)
     else
-      if getBotToken()
+      token = getBotToken()
+      if token
         getAllResource(msg, token, project, resource_path)
       else
         msg.send "Unable to authenticate"
 
   getAllResource = (msg, token, projectSlug, resource_path) ->
-    if getPID(token, projectSlug)
+    pid = getPID(token, projectSlug)
+    if pid
       # Get list userstories/tasks for project where status_is_closed=false.
       data = "?project=#{pid}&status__is_closed=false"
       robot.http(url + resource_path + data)
