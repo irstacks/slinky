@@ -177,7 +177,8 @@ module.exports = (robot) ->
         pid = data.project
 
         if pid
-          data = "?project=#{pid}"
+          # Get list userstories for project where status_is_closed=false.
+          data = "?project=#{pid}&status__is_closed=false"
           robot.http(url + '/userstories' + data)
             .headers('Content-Type': 'application/json', 'Authorization': auth)
             .get() (err, res, body) ->
@@ -185,15 +186,18 @@ module.exports = (robot) ->
 
               if data
                 words = ""
-                # Test to make sure we get data.
-                # msg.send data # OK!
                 for k, v of data
-                  if k == 'subject'
-                    words += "Subject:" + v + "\n"
-                  else if k == 'status_extra_info'
-                    words += "  Status:" + v["name"] + "\n"
-                  else if k == 'assigned_to_extra_info'
-                    words += "  Assigned to:" + v["full_name_display"]
+                  words += k + ": " + v + "\n"
+                # words = ""
+                # # Test to make sure we get data.
+                # # msg.send data # OK!
+                # for k, v of data
+                #   if k == 'subject'
+                #     words += "Subject:" + v + "\n"
+                #   else if k == 'status_extra_info'
+                #     words += "  Status:" + v["name"] + "\n"
+                #   else if k == 'assigned_to_extra_info'
+                #     words += "  Assigned to:" + v["full_name_display"]
 
                 msg.send words
 
