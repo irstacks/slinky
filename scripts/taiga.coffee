@@ -158,69 +158,6 @@ module.exports = (robot) ->
           msg.send "Couldn't get the pid."
 
 
-  # Being replaced...
-  # robot.hear /taiga (task|tasks) add (.*)/i, (msg) ->
-  #   incoming_subject = msg.match[2]
-
-  #   project = getProject(msg)
-  #   if not project
-  #     msg.send project_not_set_msg
-  #     return
-
-  #   token = getUserToken(msg)
-
-  #   if token
-  #     createUserstory(msg, token, project, incoming_subject)
-  #   else
-  #     data = JSON.stringify({
-  #       type: "normal",
-  #       username: username,
-  #       password: password
-  #     })
-  #     robot.http(url + 'auth')
-  #       .headers('Content-Type': 'application/json')
-  #       .post(data) (err, res, body) ->
-  #         data = JSON.parse body
-  #         token = data.auth_token
-  #         if token
-  #           createUserstory(msg, token, project, incoming_subject)
-  #         else
-  #           msg.send "Unable to authenticate"
-
-  # createUserstory = (msg, token, projectSlug, subjectable) ->
-  #   # Use for grabbing resolved project id.
-  #   data = "?project=#{projectSlug}"
-  #   auth = "Bearer #{token}"
-
-  #   # Get project id.
-  #   robot.http(url + 'resolver' + data)
-  #     .headers('Content-Type': 'application/json', 'Authorization': auth)
-  #     .get() (err, res, body) ->
-  #       data = JSON.parse body
-  #       pid = data.project
-
-  #       # If we resolve the project id.
-  #       if pid
-  #         postable_obj = {
-  #           project: pid,
-  #           subject: subjectable
-  #         }
-  #         postable_json = JSON.stringify postable_obj
-
-  #         robot.http(url + '/userstories')
-  #           .headers('Content-Type': 'application/json', 'Authorization': auth)
-  #           .post(postable_json) (err, res, body) ->
-  #             reference = JSON.parse body
-  #             if err or not reference.id
-  #               msg.send "Failed to create userstory."
-  #             else
-  #               msg.send "Created <#{taiga_tree_url}#{getProject(msg)}/us/#{reference.id}|#{subjectable}>."
-  #       else
-  #         msg.send "Couldn't get the pid."
-
-
-
-
   #####################################################
   # A little abstracter.
 
@@ -278,7 +215,10 @@ module.exports = (robot) ->
               response_list = JSON.parse body
 
               if response_list
-                say = ""
+
+                say = "*Open Userstories:\n" if resource_path is '/userstories'
+                say = "*Open Tasks:\n" if resource_path is '/tasks'
+
                 say += formatted_reponse(item, resource_path) for item in response_list
                 msg.send say
 
@@ -292,7 +232,7 @@ module.exports = (robot) ->
 
     switch resource_path
       when '/userstories'
-        words += "*Open userstories:*\n"
+
         words += "us:" + item['id']
         words += " (" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
         words += " - "
@@ -305,8 +245,9 @@ module.exports = (robot) ->
           words += "\n"
         else
           words += "\n"
+
       when '/tasks'
-        words += "*Open tasks:*\n"
+
         words += "us:" + (item['project'] || "?") + "/task:" + item['id'] + " - "
         words += "*" + item['subject'] + "* "
         words += "_" + item['status_extra_info']['name'] + "_ "
