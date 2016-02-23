@@ -16,103 +16,103 @@
   # taiga (task|tasks) edit 52 status done - Edit task by ID.
 
   ##################################################
-module.exports = (robot) ->
+# module.exports = (robot) ->
 
-  getPID = (token, projectSlug) ->
-    data = "?project=#{projectSlug}"
-    auth = "Bearer #{token}"
+#   getPID = (token, projectSlug) ->
+#     data = "?project=#{projectSlug}"
+#     auth = "Bearer #{token}"
 
-    # Get project id.
-    robot.http(url + 'resolver' + data)
-      .headers('Content-Type': 'application/json', 'Authorization': auth)
-      .get() (err, res, body) ->
-        data = JSON.parse body
-        pid = data.project
-        return pid
+#     # Get project id.
+#     robot.http(url + 'resolver' + data)
+#       .headers('Content-Type': 'application/json', 'Authorization': auth)
+#       .get() (err, res, body) ->
+#         data = JSON.parse body
+#         pid = data.project
+#         return pid
 
-  getBotToken = () ->
-    data = JSON.stringify({
-      type: "normal",
-      username: username,
-      password: password
-    })
-    robot.http(url + 'auth')
-      .headers('Content-Type': 'application/json')
-      .post(data) (err, res, body) ->
-        data = JSON.parse body
-        token = data.auth_token
-        return token
+#   getBotToken = () ->
+#     data = JSON.stringify({
+#       type: "normal",
+#       username: username,
+#       password: password
+#     })
+#     robot.http(url + 'auth')
+#       .headers('Content-Type': 'application/json')
+#       .post(data) (err, res, body) ->
+#         data = JSON.parse body
+#         token = data.auth_token
+#         return token
 
-  # Get all tasks or userstories.
-  robot.hear /taiga (us|userstory|userstories|task|tasks) list/i, (msg) ->
-    project = getProject(msg)
-    if not project
-      msg.send project_not_set_msg
-      return
+#   # Get all tasks or userstories.
+#   robot.hear /taiga (us|userstory|userstories|task|tasks) list/i, (msg) ->
+#     project = getProject(msg)
+#     if not project
+#       msg.send project_not_set_msg
+#       return
 
-    resource_type = msg.match[1]
+#     resource_type = msg.match[1]
 
-    switch resource_type
-      when 'us','userstory','userstories' then resource_path = '/userstories'
-      when 'task','tasks' then resource_path = '/tasks'
+#     switch resource_type
+#       when 'us','userstory','userstories' then resource_path = '/userstories'
+#       when 'task','tasks' then resource_path = '/tasks'
 
-    token = getUserToken(msg)
+#     token = getUserToken(msg)
 
-    if token
-      getAllResource(msg, token, project, resource_path)
-    else
-      if getBotToken()
-        getAllResource(msg, token, project, resource_path)
-      else
-        msg.send "Unable to authenticate"
+#     if token
+#       getAllResource(msg, token, project, resource_path)
+#     else
+#       if getBotToken()
+#         getAllResource(msg, token, project, resource_path)
+#       else
+#         msg.send "Unable to authenticate"
 
-  getAllResource = (msg, token, projectSlug, resource_path) ->
-    if getPID(token, projectSlug)
-      # Get list userstories/tasks for project where status_is_closed=false.
-      data = "?project=#{pid}&status__is_closed=false"
-      robot.http(url + resource_path + data)
-        .headers('Content-Type': 'application/json', 'Authorization': auth)
-        .get() (err, res, body) ->
-          response_list = JSON.parse body
+#   getAllResource = (msg, token, projectSlug, resource_path) ->
+#     if getPID(token, projectSlug)
+#       # Get list userstories/tasks for project where status_is_closed=false.
+#       data = "?project=#{pid}&status__is_closed=false"
+#       robot.http(url + resource_path + data)
+#         .headers('Content-Type': 'application/json', 'Authorization': auth)
+#         .get() (err, res, body) ->
+#           response_list = JSON.parse body
 
-          if response_list
-            say = ""
-            say += formatted_reponse(item, resource_path) for item in response_list
-            msg.send say
+#           if response_list
+#             say = ""
+#             say += formatted_reponse(item, resource_path) for item in response_list
+#             msg.send say
 
-          else
-            msg.send "Couldn't get data for project with id #{pid}."
-    else
-      msg.send "Couldn't get the pid."
+#           else
+#             msg.send "Couldn't get data for project with id #{pid}."
+#     else
+#       msg.send "Couldn't get the pid."
 
-  formatted_reponse = (item, resource_path) ->
-    words = ""
+#   formatted_reponse = (item, resource_path) ->
+#     words = ""
 
-    switch resource_path
-      when '/userstories'
-        words += "us:" + item['id'] + " - "
-        words += "*" + item['subject'] + "* "
-        words += "_" + item['status_extra_info']['name'] + "_ "
-        words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
-        if item['description']
-          words += "\n"
-          words += "_" + item["description"] + "_"
-          words += "\n"
-        else
-          words += "\n"
-      when '/tasks'
-        words += "task:" + item['id'] + " - "
-        words += "*" + item['subject'] + "* "
-        words += "_" + item['status_extra_info']['name'] + "_ "
-        words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
-        if item['description']
-          words += "\n"
-          words += "_" + item["description"] + "_"
-          words += "\n"
-        else
-          words += "\n"
+#     switch resource_path
+#       when '/userstories'
+#         words += "us:" + item['id'] + " - "
+#         words += "*" + item['subject'] + "* "
+#         words += "_" + item['status_extra_info']['name'] + "_ "
+#         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
+#         if item['description']
+#           words += "\n"
+#           words += "_" + item["description"] + "_"
+#           words += "\n"
+#         else
+#           words += "\n"
+#       when '/tasks'
+#         words += "task:" + item['id'] + " - "
+#         words += "*" + item['subject'] + "* "
+#         words += "_" + item['status_extra_info']['name'] + "_ "
+#         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
+#         if item['description']
+#           words += "\n"
+#           words += "_" + item["description"] + "_"
+#           words += "\n"
+#         else
+#           words += "\n"
 
-    return words
+#     return words
 
 
   ##################################################
