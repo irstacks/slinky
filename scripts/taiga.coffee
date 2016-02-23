@@ -185,7 +185,9 @@ module.exports = (robot) ->
               userstories = JSON.parse body
 
               if userstories
-                msg.send relevantUserstoryInfo(userstory) for userstory in userstories
+                say = ""
+                say += relevantUserstoryInfo(userstory) for userstory in userstories
+                msg.send say
 
               else
                 msg.send "Couldn't get data for project with id #{pid}."
@@ -195,14 +197,9 @@ module.exports = (robot) ->
 
   relevantUserstoryInfo = (userstory) ->
     words = ""
-    for k, v in userstory
-
-      if k == 'subject'
-        words += "Subject:" + v + "\n"
-      else if k == 'status_extra_info'
-        words += "  Status:" + v["name"] + "\n"
-      else if k == 'assigned_to_extra_info'
-        words += "  Assigned to:" + v["full_name_display"]
+    words += "Subject: " + userstory['subject'] + "\n"
+    words += "  Status: " + userstory['status_extra_info']['name'] + "\n"
+    words += "  Assigned to: " + userstory['assigned_to_extra_info']['full_name_display'] + "\n"
 
     return words
 
