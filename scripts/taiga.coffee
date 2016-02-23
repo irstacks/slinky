@@ -216,8 +216,8 @@ module.exports = (robot) ->
 
               if response_list
 
-                say = "*Open Userstories:\n" if resource_path is '/userstories'
-                say = "*Open Tasks:\n" if resource_path is '/tasks'
+                say = "*Open Userstories:*\n" if resource_path is '/userstories'
+                say = "*Open Tasks:*\n" if resource_path is '/tasks'
 
                 say += formatted_reponse(item, resource_path) for item in response_list
                 msg.send say
