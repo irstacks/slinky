@@ -153,7 +153,7 @@ module.exports = (robot) ->
               if err or not reference.id
                 msg.send "Failed to create the resource."
               else
-                msg.send "Created <#{taiga_tree_url}#{getProject(msg)}/#{gettable_url}/#{reference.id}|#{payload['subject']}>."
+                msg.send "Created #{payload['subject']}\n#{taiga_tree_url}#{getProject(msg)}/#{gettable_url}/#{reference.ref}"
         else
           msg.send "Couldn't get the pid."
 
