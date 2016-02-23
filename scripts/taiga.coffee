@@ -199,7 +199,7 @@ module.exports = (robot) ->
     words = ""
     words += "Subject: " + userstory['subject'] + "\n"
     words += "  Status: " + userstory['status_extra_info']['name'] + "\n"
-    words += "  Assigned to: " + userstory['assigned_to_extra_info']['full_name_display'] + "\n"
+    words += "  Assigned to: " + userstory['assigned_to_extra_info']['full_name_display'] + "\n" if userstory['assigned_to_extra_info']
 
     return words
 
