@@ -167,11 +167,11 @@ module.exports = (robot) ->
   #####################################################
 
   # Get all tasks for specific userstory.
-  # Now accepting US:ref, instead of US:id.
+  # Now accepting US:id.
   # https://api.taiga.io/api/v1/tasks/by_ref?ref=1&project=1
   robot.hear /taiga (task|tasks) us:(\d+) (list)?/i, (msg) ->
 
-    usref = msg.match[2]
+    usid = msg.match[2]
     project = getProject(msg)
     if not project
       msg.send project_not_set_msg
@@ -180,7 +180,7 @@ module.exports = (robot) ->
     token = getUserToken(msg)
 
     if token
-      getTasksForUserstory(msg, token, project, usref)
+      getTasksForUserstory(msg, token, project, usid)
     else
       data = JSON.stringify({
         type: "normal",
@@ -193,12 +193,12 @@ module.exports = (robot) ->
           data = JSON.parse body
           token = data.auth_token
           if token
-            getTasksForUserstory(msg, token, project, usref)
+            getTasksForUserstory(msg, token, project, usid)
           else
             msg.send "Unable to authenticate"
 
 
-  getTasksForUserstory = (msg, token, projectSlug, usref) ->
+  getTasksForUserstory = (msg, token, projectSlug, usid) ->
     data = "?project=#{projectSlug}"
     auth = "Bearer #{token}"
 
@@ -210,7 +210,7 @@ module.exports = (robot) ->
         pid = data.project
         if pid
 
-          data = "/byref?ref=#{usref}&project=#{pid}"
+          data = "&user_story=#{usid}" #"/byref?ref=#{usid}&project=#{pid}"
           auth = "Bearer #{token}"
 
           robot.http(url + 'tasks' + data)
@@ -220,15 +220,15 @@ module.exports = (robot) ->
               task_list = JSON.parse body
 
               if task_list
-                # if task_list.length > 0
-                say = "Task list for US:#{usref}"
-                say += formatted_reponse(task, '/tasks') for task in task_list
-                msg.send say
-                # else
-                #   msg.send "There are no tasks for US:#{usref}"
+                if task_list.length > 0
+                  say = "Task list for US:#{usid}"
+                  say += formatted_reponse(task, '/tasks') for task in task_list
+                  msg.send say
+                else
+                  msg.send "There are no tasks for US:#{usid}"
 
               else
-                msg.send "Unable to retrieve tasks for userstory w/ id: #{usref}"
+                msg.send "Unable to retrieve tasks for userstory w/ id: #{usid}"
 
 
 
@@ -309,7 +309,7 @@ module.exports = (robot) ->
         usid = item['id']
         auth = auth
 
-        words += "us:" + item['ref']
+        words += "us:" + item['id']
         words += " (" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
         words += " - "
         words += "*" + item['subject'] + "* "
@@ -324,7 +324,7 @@ module.exports = (robot) ->
 
       when '/tasks'
 
-        words += "task:" + item['ref'] + " - "
+        words += "us:" + (item['user_story'] || "?") + " /task:" + item['ref'] + " - "
         words += "*" + item['subject'] + "* "
         words += "_" + item['status_extra_info']['name'] + "_ "
         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
