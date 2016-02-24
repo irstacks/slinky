@@ -16,14 +16,14 @@
 #   taiga auth <username> <password> - Authenticate so that comments from from this user
 #   TG-<REF> <comment> - Send a comment to Taiga. Example `TG-123 I left a comment!` and `TG-123 #done I finished it, I am the best.`
 #
-#   taiga (us|userstory) list - List all open userstories.
-#   taiga (us|userstory) show 34
-#   taiga (us|userstory) add subject:The beginning of long journey description: The Road goes on.
+#   taiga (us|userstory) - List all open userstories.
+#   taiga (us|userstory) us:34 - List all tasks for userstory by ID.
+#   taiga (us|userstory) add sub:The beginning of long journey desc: The Road goes on.
 #   taiga (us|userstory) edit 34 status close - Edit userstory by ID.
 #
-#   taiga (task|tasks) list - List all open tasks.
+#   taiga (task|tasks) - List all open tasks.
 #   taiga (task|tasks) us:34 - List all tasks for userstory by ID.
-#   taiga (task|tasks) add us:34 subject:Do it. description:And do it good.
+#   taiga (task|tasks) add (us:34|) sub:Do it. desc:And do it good.
 #   taiga (task|tasks) edit 52 status done - Edit task by ID.
 #
 #   taiga post userstory (.*) - Post a userstory with subject ___
@@ -83,7 +83,7 @@ module.exports = (robot) ->
 
 ########################### POST
 
-  robot.hear /taiga (us|userstory|userstories|task|tasks) add( us\:(\d+))? (subject:(.*)) (description:(.*))/i, (msg) ->
+  robot.hear /taiga (us|userstory|userstories|task|tasks) add( us\:(\d+))? (sub:(.*)) (desc:(.*))/i, (msg) ->
     resource_type = msg.match[1]
     incoming_us = msg.match[3]
     incoming_subject = msg.match[5]
@@ -163,7 +163,7 @@ module.exports = (robot) ->
 
 
   # Get all tasks or userstories.
-  robot.hear /taiga (us|userstory|userstories|task|tasks) list/i, (msg) ->
+  robot.hear /taiga (us|userstory|userstories|task|tasks)/i, (msg) ->
     project = getProject(msg)
     if not project
       msg.send project_not_set_msg
@@ -232,7 +232,7 @@ module.exports = (robot) ->
   # Get all tasks for specific userstory.
   # Now accepting US:id.
   # https://api.taiga.io/api/v1/tasks/by_ref?ref=1&project=1
-  robot.hear /taiga (task|tasks) us:(\d+) (list)?/i, (msg) ->
+  robot.hear /taiga (us|userstory|userstories|task|tasks) us:(\d+)/i, (msg) ->
 
     usid = msg.match[2]
     project = getProject(msg)
@@ -287,7 +287,7 @@ module.exports = (robot) ->
 
                 if task_list
                   # if task_list.length > 0
-                  say = "Task list for US:#{usid}"
+                  say = "*Task list for US:#{usid}*\n"
                   say += formatted_reponse(task, projectSlug, '/tasks') for task in task_list
                   msg.send say
                   # else
