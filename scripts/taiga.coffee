@@ -157,7 +157,7 @@ module.exports = (robot) ->
               if err or not reference.id
                 msg.send "Failed to create the resource."
               else
-                msg.send "Created #{payload['subject']}\n#{taiga_tree_url}#{getProject(msg)}/#{gettable_url}/#{reference.ref}"
+                msg.send "Created *#{payload['subject']}*\n#{taiga_tree_url}#{getProject(msg)}/#{gettable_url}/#{reference.ref}"
         else
           msg.send "Couldn't get the pid."
 
@@ -241,10 +241,9 @@ module.exports = (robot) ->
     switch resource_path
       when '/userstories'
 
-        usid = item['id']
-        auth = auth
-
-        words += "\nus:" + item['id']
+        # Make link?
+        word += "<#{taiga_tree_url}#{getProject(msg)}/us/#{item['ref']}|"
+        words += "\nus:" + item['ref'] + ">"
         words += " _" + item['status_extra_info']['name'] + "_ "
         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
         words += " - "
