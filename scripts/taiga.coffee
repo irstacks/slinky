@@ -592,7 +592,7 @@ module.exports = (robot) ->
           statusSlug = match[1].slice(1)
           getReferenceStatuses(msg, auth, reference, project, statusSlug, data, type)
         else
-          postReference(msg, auth, reference, data, type)
+          postReference(msg, auth, reference, data, type, statusSlug)
 
 
   getReferenceStatuses = (msg, auth, reference, project, statusSlug, data, type) ->
@@ -609,12 +609,12 @@ module.exports = (robot) ->
           if status.slug == statusSlug
             data.status = status.id
         if data.status
-          postReference(msg, auth, reference, data, type)
+          postReference(msg, auth, reference, data, type, statusSlug)
         else
           msg.send "Unable to find #{type} status #{statusSlug}."
 
 
-  postReference = (msg, auth, reference, data, type) ->
+  postReference = (msg, auth, reference, data, type, statusSlug) ->
     data = JSON.stringify(data)
 
     switch type
@@ -628,3 +628,5 @@ module.exports = (robot) ->
         reference = JSON.parse body
         if err or not reference.id
           msg.send "Failed to update #{type}"
+        else
+          msg.send "Success. Status for #{type} ##{reference.ref} is #{statusSlug}"
