@@ -1,90 +1,20 @@
-# Description:
-#   Send Taiga.io commands via hubot
-#
-# Dependencies:
-#   "hubot-taiga": "0.1"
-#
-# Configuration:
-#   HUBOT_TAIGA_USERNAME
-#   HUBOT_TAIGA_PASSWORD
-#   HUBOT_TAIGA_PROJECT
-#   HUBOT_TAIGA_URL
-#
-# Commands:
-#   taiga info - Displays infomation about Taiga connection for user
-#   taiga project <project-slug> - Set taiga project for this channel
-#   taiga auth <username> <password> - Authenticate so that comments from from this user
-#   TG-<REF> <comment> - Send a comment to Taiga. Example `TG-123 I left a comment!` and `TG-123 #done I finished it, I am the best.`
-#
-#   taiga (us|userstory) list - List all open userstories.
-#   taiga (us|userstory) show 34
-#   taiga (us|userstory) add subject:The beginning of long journey description: The Road goes on.
-#   taiga (us|userstory) edit 34 status close - Edit userstory by ID.
-#
-#   taiga (task|tasks) list - List all open tasks.
-#   taiga (task|tasks) us:34 - List all tasks for userstory by ID.
-#   taiga (task|tasks) add us:34 subject:Do it. description:And do it good.
-#   taiga (task|tasks) edit 52 status done - Edit task by ID.
-#
-#   taiga post userstory (.*) - Post a userstory with subject ___
-#
-#
-# Notes:
-#   Environment variables are optional.
-#   If you use tree.taiga.io and wish to have each user log in as themselves - there is no need to set them
-#
-#   Set username and password if you would rather have a Hubot user submit for all users
-#   If you want users to post as themselves they should use `taiga auth <username> <password>`.
-#   Consider the security implications of having password set in your chat service.
-#
-#   Set project if you would like a global default project set.
-#   Otherwise use `taiga project <project-slug>` to set the project per channel
-#
-# Author:
-#   David Burke
+
+
+require './taiga-config.coffee'
+
+###
+     _  _     _____   ____   _____ _______
+   _| || |_  |  __ \ / __ \ / ____|__   __|
+  |_  __  _| | |__) | |  | | (___    | |
+   _| || |_  |  ___/| |  | |\___ \   | |
+  |_  __  _| | |    | |__| |____) |  | |
+    |_||_|   |_|     \____/|_____/   |_|
+
+
+###
 
 
 module.exports = (robot) ->
-
-  ####### Helpers and init inherited from Mr. Burke.
-
-  username = process.env.HUBOT_TAIGA_USERNAME
-  password = process.env.HUBOT_TAIGA_PASSWORD
-  global_project = process.env.HUBOT_TAIGA_PROJECT
-  project_not_set_msg = "Set project with `taiga project PROJECT_SLUG`"
-  url = process.env.HUBOT_TAIGA_URL or "https://api.taiga.io/api/v1/"
-  taiga_tree_url = "https://tree.taiga.io/project/"
-  redis_prefix = 'taiga_'
-  statusPattern = /(#[^\s]+)/i
-
-
-  getProject = (msg) ->
-    key = getProjectKey(msg)
-    project = robot.brain.get(key)
-    if project
-      project
-    else
-      global_project
-
-
-  getUserToken = (msg) ->
-    key = "#{redis_prefix}#{msg.message.user.name}_token"
-    token = robot.brain.get(key)
-    if token
-      token
-
-
-  getProjectKey = (msg) ->
-    project_key = redis_prefix + 'project'
-    room = msg.message.room
-    project_key + room
-
-
-  ########## \ia
-
-  #####################################################
-  ## Create. (Post.)
-  #####################################################
 
   robot.hear /taiga (us|userstory|userstories|task|tasks) add( us\:(\d+))? (subject:(.*)) (description:(.*))/i, (msg) ->
     resource_type = msg.match[1]
@@ -162,9 +92,16 @@ module.exports = (robot) ->
           msg.send "Couldn't get the pid."
 
 
-  #####################################################
-  # Index. (Get all.)
-  #####################################################
+###
+     _  _     _____ _   _ _____  ________   __
+   _| || |_  |_   _| \ | |  __ \|  ____\ \ / /
+  |_  __  _|   | | |  \| | |  | | |__   \ V /
+   _| || |_    | | | . ` | |  | |  __|   > <
+  |_  __  _|  _| |_| |\  | |__| | |____ / . \
+    |_||_|   |_____|_| \_|_____/|______/_/ \_\
+
+
+###
 
 
   # Get all tasks or userstories.
@@ -234,6 +171,70 @@ module.exports = (robot) ->
         else
           msg.send "Couldn't get the pid."
 
+  # Get all tasks for specific userstory.
+  # Now accepting US:id.
+  # https://api.taiga.io/api/v1/tasks/by_ref?ref=1&project=1
+  robot.hear /taiga (task|tasks) us:(\d+) (list)?/i, (msg) ->
+
+    usid = msg.match[2]
+    project = getProject(msg)
+    if not project
+      msg.send project_not_set_msg
+      return
+
+    token = getUserToken(msg)
+
+    if token
+      getTasksForUserstory(msg, token, project, usid)
+    else
+      data = JSON.stringify({
+        type: "normal",
+        username: username,
+        password: password
+      })
+      robot.http(url + 'auth')
+        .headers('Content-Type': 'application/json')
+        .post(data) (err, res, body) ->
+          data = JSON.parse body
+          token = data.auth_token
+          if token
+            getTasksForUserstory(msg, token, project, usid)
+          else
+            msg.send "Unable to authenticate"
+
+
+  getTasksForUserstory = (msg, token, projectSlug, usid) ->
+    data = "?project=#{projectSlug}"
+    auth = "Bearer #{token}"
+
+    # Get project id.
+    robot.http(url + 'resolver' + data)
+      .headers('Content-Type': 'application/json', 'Authorization': auth)
+      .get() (err, res, body) ->
+        data = JSON.parse body
+        pid = data.project
+        if pid
+
+          data = "&project=#{pid}&user_story=#{usid}&status__is_closed=false" # "/"
+          auth = "Bearer #{token}"
+
+          robot.http(url + 'tasks' + data)
+            .headers('Content-Type': 'application/json', 'Authorization': auth)
+            .get() (err, res, body) ->
+
+              task_list = JSON.parse body
+
+              if task_list
+                # if task_list.length > 0
+                say = "Task list for US:#{usid}"
+                say += formatted_reponse(task, projectSlug, '/tasks') for task in task_list
+                msg.send say
+                # else
+                #   msg.send "There are no tasks for US:#{usid}"
+
+              else
+                msg.send "Unable to retrieve tasks for userstory w/ id: #{usid}"
+
 
   formatted_reponse = (item, projectSlug, resource_path) ->
     words = ""
@@ -265,7 +266,17 @@ module.exports = (robot) ->
     return words
 
 
-  ######## Inherited from D Burke.
+###
+     _  _     _____    ____             _
+   _| || |_  |  __ \  |  _ \           | |
+  |_  __  _| | |  | | | |_) |_   _ _ __| | _____
+   _| || |_  | |  | | |  _ <| | | | '__| |/ / _ \
+  |_  __  _| | |__| | | |_) | |_| | |  |   <  __/_
+    |_||_|   |_____/  |____/ \__,_|_|  |_|\_\___(_)
+
+
+###
+
 
   robot.hear /taiga info/i, (msg) ->
     project = getProject(msg)
