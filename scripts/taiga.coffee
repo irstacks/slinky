@@ -273,7 +273,7 @@ module.exports = (robot) ->
         pid = data.project
         if pid
 
-          data = "&user_story=#{usid}&status__is_closed=false" # "/"
+          data = "?user_story=#{usid}&status__is_closed=false" # "/"
           auth = "Bearer #{token}"
 
           robot.http(url + 'tasks' + data)
@@ -281,9 +281,9 @@ module.exports = (robot) ->
             .get() (err, res, body) ->
 
               if not err
-                # task_list = JSON.parse body
-                body = JSON.stringify body
-                msg.send body
+                task_list = JSON.parse body
+                # body = JSON.stringify body
+                # msg.send body
 
                 if task_list
                   # if task_list.length > 0
