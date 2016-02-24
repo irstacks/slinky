@@ -273,7 +273,7 @@ module.exports = (robot) ->
         pid = data.project
         if pid
 
-          data = "&project=#{pid}&user_story=#{usid}&status__is_closed=false" # "/"
+          data = "&user_story=#{usid}&status_is_closed=false" # "/"
           auth = "Bearer #{token}"
 
           robot.http(url + 'tasks' + data)
