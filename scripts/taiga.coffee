@@ -242,22 +242,25 @@ module.exports = (robot) ->
       when '/userstories'
 
         # Make link?
-        words += "\n<#{taiga_tree_url}#{projectSlug}/us/#{item['ref']}|"
-        words += "us:" + item['ref'] + ">"
+        words += "\n"
+        words += "us:" + item['ref']
         words += " _" + item['status_extra_info']['name'] + "_ "
         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
         words += " - "
         words += "*" + item['subject'] + "* "
-        words += "\n        _" + item["description"] + "_" if item.hasOwnProperty('description')
-        words += "\n"
+        words += "\n        " + item['description'] + "" if item['description']
+        # Link to taiga item.
+        words += "\n#{taiga_tree_url}#{projectSlug}/us/#{item['ref']}"
 
       when '/tasks'
         # _New_​ us:554410/task:9 - ​*get separate keys from FB for production and staging*​
-        words += "\n_" + item['status_extra_info']['name'] + "_ "
+        words += "\n_"
         words += "us:" + (item['user_story'] || "??????") + "/task:" + item['ref']
+        words += item['status_extra_info']['name'] + "_ "
         words += " - "
         words += "*" + item['subject'] + "* "
-        words += "\n        _" + item["description"] + "_" if item.hasOwnProperty('description')
+        words += "\n        " + item['description'] + "" if item['description']
+        words += "\n#{taiga_tree_url}#{projectSlug}/task/#{item['ref']}"
 
     return words
 
