@@ -130,8 +130,8 @@ module.exports = (robot) ->
       .headers('Content-Type': 'application/json', 'Authorization': auth)
       .patch(payload_patchable) (err, res, body) ->
         if res
-          res_json = JSON.stringify res
-          msg.send "Res: #{res_json}"
+          status_code = res.statusCode
+          msg.send "Res: #{status_code}"
         if body
           closed_resource = JSON.parse body
           closed_resource_json = JSON.stringify body
