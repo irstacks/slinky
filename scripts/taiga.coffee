@@ -80,9 +80,60 @@ module.exports = (robot) ->
     project_key + room
 
 
+########################### DELETE
+
+  robot.hear /taiga delete (us|userstory|task) (\d+)/i, (msg) ->
+    resource_type = msg.match[1]
+    rid = msg.match[2]
+
+    switch resource_type
+      when 'us','userstory'
+        resource_path = 'userstories'
+      when 'task'
+        resource_path = 'tasks'
+
+
+    token = getUserToken(msg)
+
+    if token
+      deleteResource(msg, token, resource_path, rid)
+    else
+      data = JSON.stringify({
+        type: "normal",
+        username: username,
+        password: password
+      })
+      robot.http(url + 'auth')
+        .headers('Content-Type': 'application/json')
+        .post(data) (err, res, body) ->
+          data = JSON.parse body
+          token = data.auth_token
+          if token
+            deleteResource(msg, token, resource_path, rid)
+          else
+            msg.send "Unable to authenticate"
+
+  deleteResource = (msg, token, resource_path, rid) ->
+    data = "#{resource_path}/"
+    auth = "Bearer #{token}"
+
+    robot.http(url + data + rid)
+      .headers('Content-Type': 'application/json', 'Authorization': auth)
+      .delete() (err, res, body) ->
+        #if res is '204 NO CONTENT'
+        if not err
+          msg.send "Deleted resource."
+
+
+########################### PATCH
+
+
 
 ########################### POST
 
+  # Post a task or userstory.
+  # If posting a task, us:<id> is optional.
+  # Argument order is not optional.
   robot.hear /taiga (us|userstory|userstories|task|tasks) add( us\:(\d+))? (sub:(.*)) (desc:(.*))/i, (msg) ->
     resource_type = msg.match[1]
     incoming_us = msg.match[3]
@@ -103,7 +154,7 @@ module.exports = (robot) ->
         gettable_url = 'tasks'
 
     # Set us ref if there is one and if we're not posting a user story.
-    payload.user_story = parseInt(incoming_us) if incoming_us and resource_url is not '/userstories'
+    payload.user_story = parseInt(incoming_us) if incoming_us and resource_url is '/tasks'
 
     project = getProject(msg)
     if not project
@@ -309,7 +360,6 @@ module.exports = (robot) ->
     switch resource_path
       when '/userstories'
 
-        # Make link?
         words += "\n"
         words += "us:" + item['id']
         words += " _" + item['status_extra_info']['name'] + "_ "
@@ -321,9 +371,9 @@ module.exports = (robot) ->
         words += "\n#{taiga_tree_url}#{projectSlug}/us/#{item['ref']}\n"
 
       when '/tasks'
-        # _New_​ us:554410/task:9 - ​*get separate keys from FB for production and staging*​
+
         words += "\n_"
-        words += "us:" + (item['user_story'] || "??????") + "/task:" + item['ref']
+        words += "us:" + (item['user_story'] || "??????") + "/task:" + item['id']
         words += " " + item['status_extra_info']['name'] + "_ "
         words += " - "
         words += "*" + item['subject'] + "* "
