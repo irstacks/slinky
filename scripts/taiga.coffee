@@ -2,19 +2,10 @@
 
 require './taiga-config.coffee'
 
-###
-     _  _     _____   ____   _____ _______
-   _| || |_  |  __ \ / __ \ / ____|__   __|
-  |_  __  _| | |__) | |  | | (___    | |
-   _| || |_  |  ___/| |  | |\___ \   | |
-  |_  __  _| | |    | |__| |____) |  | |
-    |_||_|   |_|     \____/|_____/   |_|
-
-
-###
-
 
 module.exports = (robot) ->
+
+########################### POST
 
   robot.hear /taiga (us|userstory|userstories|task|tasks) add( us\:(\d+))? (subject:(.*)) (description:(.*))/i, (msg) ->
     resource_type = msg.match[1]
@@ -92,16 +83,7 @@ module.exports = (robot) ->
           msg.send "Couldn't get the pid."
 
 
-###
-     _  _     _____ _   _ _____  ________   __
-   _| || |_  |_   _| \ | |  __ \|  ____\ \ / /
-  |_  __  _|   | | |  \| | |  | | |__   \ V /
-   _| || |_    | | | . ` | |  | |  __|   > <
-  |_  __  _|  _| |_| |\  | |__| | |____ / . \
-    |_||_|   |_____|_| \_|_____/|______/_/ \_\
-
-
-###
+#################### INDEX
 
 
   # Get all tasks or userstories.
@@ -171,69 +153,69 @@ module.exports = (robot) ->
         else
           msg.send "Couldn't get the pid."
 
-  # # Get all tasks for specific userstory.
-  # # Now accepting US:id.
-  # # https://api.taiga.io/api/v1/tasks/by_ref?ref=1&project=1
-  # robot.hear /taiga (task|tasks) us:(\d+) (list)?/i, (msg) ->
+  # Get all tasks for specific userstory.
+  # Now accepting US:id.
+  # https://api.taiga.io/api/v1/tasks/by_ref?ref=1&project=1
+  robot.hear /taiga (task|tasks) us:(\d+) (list)?/i, (msg) ->
 
-  #   usid = msg.match[2]
-  #   project = getProject(msg)
-  #   if not project
-  #     msg.send project_not_set_msg
-  #     return
+    usid = msg.match[2]
+    project = getProject(msg)
+    if not project
+      msg.send project_not_set_msg
+      return
 
-  #   token = getUserToken(msg)
+    token = getUserToken(msg)
 
-  #   if token
-  #     getTasksForUserstory(msg, token, project, usid)
-  #   else
-  #     data = JSON.stringify({
-  #       type: "normal",
-  #       username: username,
-  #       password: password
-  #     })
-  #     robot.http(url + 'auth')
-  #       .headers('Content-Type': 'application/json')
-  #       .post(data) (err, res, body) ->
-  #         data = JSON.parse body
-  #         token = data.auth_token
-  #         if token
-  #           getTasksForUserstory(msg, token, project, usid)
-  #         else
-  #           msg.send "Unable to authenticate"
+    if token
+      getTasksForUserstory(msg, token, project, usid)
+    else
+      data = JSON.stringify({
+        type: "normal",
+        username: username,
+        password: password
+      })
+      robot.http(url + 'auth')
+        .headers('Content-Type': 'application/json')
+        .post(data) (err, res, body) ->
+          data = JSON.parse body
+          token = data.auth_token
+          if token
+            getTasksForUserstory(msg, token, project, usid)
+          else
+            msg.send "Unable to authenticate"
 
 
-  # getTasksForUserstory = (msg, token, projectSlug, usid) ->
-  #   data = "?project=#{projectSlug}"
-  #   auth = "Bearer #{token}"
+  getTasksForUserstory = (msg, token, projectSlug, usid) ->
+    data = "?project=#{projectSlug}"
+    auth = "Bearer #{token}"
 
-  #   # Get project id.
-  #   robot.http(url + 'resolver' + data)
-  #     .headers('Content-Type': 'application/json', 'Authorization': auth)
-  #     .get() (err, res, body) ->
-  #       data = JSON.parse body
-  #       pid = data.project
-  #       if pid
+    # Get project id.
+    robot.http(url + 'resolver' + data)
+      .headers('Content-Type': 'application/json', 'Authorization': auth)
+      .get() (err, res, body) ->
+        data = JSON.parse body
+        pid = data.project
+        if pid
 
-  #         data = "&project=#{pid}&user_story=#{usid}&status__is_closed=false" # "/"
-  #         auth = "Bearer #{token}"
+          data = "&project=#{pid}&user_story=#{usid}&status__is_closed=false" # "/"
+          auth = "Bearer #{token}"
 
-  #         robot.http(url + 'tasks' + data)
-  #           .headers('Content-Type': 'application/json', 'Authorization': auth)
-  #           .get() (err, res, body) ->
+          robot.http(url + 'tasks' + data)
+            .headers('Content-Type': 'application/json', 'Authorization': auth)
+            .get() (err, res, body) ->
 
-  #             task_list = JSON.parse body
+              task_list = JSON.parse body
 
-  #             if task_list
-  #               # if task_list.length > 0
-  #               say = "Task list for US:#{usid}"
-  #               say += formatted_reponse(task, projectSlug, '/tasks') for task in task_list
-  #               msg.send say
-  #               # else
-  #               #   msg.send "There are no tasks for US:#{usid}"
+              if task_list
+                # if task_list.length > 0
+                say = "Task list for US:#{usid}"
+                say += formatted_reponse(task, projectSlug, '/tasks') for task in task_list
+                msg.send say
+                # else
+                #   msg.send "There are no tasks for US:#{usid}"
 
-  #             else
-  #               msg.send "Unable to retrieve tasks for userstory w/ id: #{usid}"
+              else
+                msg.send "Unable to retrieve tasks for userstory w/ id: #{usid}"
 
 
   formatted_reponse = (item, projectSlug, resource_path) ->
@@ -266,16 +248,7 @@ module.exports = (robot) ->
     return words
 
 
-###
-     _  _     _____    ____             _
-   _| || |_  |  __ \  |  _ \           | |
-  |_  __  _| | |  | | | |_) |_   _ _ __| | _____
-   _| || |_  | |  | | |  _ <| | | | '__| |/ / _ \
-  |_  __  _| | |__| | | |_) | |_| | |  |   <  __/_
-    |_||_|   |_____/  |____/ \__,_|_|  |_|\_\___(_)
-
-
-###
+############################# D Burke
 
 
   robot.hear /taiga info/i, (msg) ->
