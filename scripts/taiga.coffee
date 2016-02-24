@@ -249,7 +249,7 @@ module.exports = (robot) ->
         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
         words += " - "
         words += "*" + item['subject'] + "* "
-        words += "\n        _" + item["description"] + "_" if item.hasOwnProperty(description)
+        words += "\n        _" + item["description"] + "_" if item.hasOwnProperty('description')
         words += "\n"
 
       when '/tasks'
@@ -258,7 +258,7 @@ module.exports = (robot) ->
         words += "us:" + (item['user_story'] || "??????") + "/task:" + item['ref']
         words += " - "
         words += "*" + item['subject'] + "* "
-        words += "\n        _" + item["description"] + "_" if item.hasOwnProperty(description)
+        words += "\n        _" + item["description"] + "_" if item.hasOwnProperty('description')
 
     return words
 
