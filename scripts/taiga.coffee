@@ -16,7 +16,7 @@
 #   taiga auth <username> <password> - Authenticate so that comments from from this user
 #   TG-<REF> <comment> - Send a comment to Taiga. Example `TG-123 I left a comment!` and `TG-123 #done I finished it, I am the best.`
 #
-#   taiga (us|userstory) list all open userstories.
+#   taiga (us|userstory) list - List all open userstories.
 #   taiga (us|userstory) show 34
 #   taiga (us|userstory) add subject:The beginning of long journey description: The Road goes on.
 #   taiga (us|userstory) edit 34 status close - Edit userstory by ID.
@@ -166,6 +166,48 @@ module.exports = (robot) ->
   # Index. (Get all.)
   #####################################################
 
+  # Get all tasks for specific userstory.
+  robot.hear /taiga (task|tasks) us:(\d+) (list)?/i, (msg) ->
+    usid = msg.match[1]
+
+    token = getUserToken(msg)
+
+    if token
+      getTasksForUserstory(msg, token, usid)
+    else
+      data = JSON.stringify({
+        type: "normal",
+        username: username,
+        password: password
+      })
+      robot.http(url + 'auth')
+        .headers('Content-Type': 'application/json')
+        .post(data) (err, res, body) ->
+          data = JSON.parse body
+          token = data.auth_token
+          if token
+            getTasksForUserstory(msg, token, usid)
+          else
+            msg.send "Unable to authenticate"
+
+
+  getTasksForUserstory = (msg, token, usid) ->
+    data = "?user_story=#{usid}"
+    auth = "Bearer #{token}"
+
+    robot.http(url + 'tasks' + data)
+      .headers('Content-Type': 'application/json', 'Authorization': auth)
+      .get() (err, res, body) ->
+        task_list = JSON.parse body
+        if task_list
+          say = "Task list for US:#{usid}"
+          say += formatted_reponse(task, '/tasks') for task in task_list
+          msg.send say
+
+        else
+          msg.send "Unable to retrieve tasks for userstory w/ id: #{usid}"
+
+
 
   # Get all tasks or userstories.
   robot.hear /taiga (us|userstory|userstories|task|tasks) list/i, (msg) ->
@@ -271,7 +313,6 @@ module.exports = (robot) ->
           words += "\n"
 
     return words
-
 
 
   ######## Inherited from D Burke.
