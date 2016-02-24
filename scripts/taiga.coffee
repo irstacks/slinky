@@ -82,6 +82,10 @@ module.exports = (robot) ->
 
   ########## \ia
 
+  #####################################################
+  ## Create. (Post.)
+  #####################################################
+
   robot.hear /taiga (us|userstory|userstories|task|tasks) add( us\:(\d+))? (subject:(.*)) (description:(.*))/i, (msg) ->
     resource_type = msg.match[1]
     incoming_us = msg.match[3]
@@ -159,7 +163,9 @@ module.exports = (robot) ->
 
 
   #####################################################
-  # A little abstracter.
+  # Index. (Get all.)
+  #####################################################
+
 
   # Get all tasks or userstories.
   robot.hear /taiga (us|userstory|userstories|task|tasks) list/i, (msg) ->
@@ -219,7 +225,8 @@ module.exports = (robot) ->
                 say = "*Open Userstories:*\n" if resource_path is '/userstories'
                 say = "*Open Tasks:*\n" if resource_path is '/tasks'
 
-                say += formatted_reponse(item, resource_path) for item in response_list
+                # Calls new implementation of getting all tasks for all userstories with getTasksForUS(...)
+                say += formatted_reponse(item, auth, resource_path) for item in response_list
                 msg.send say
 
               else
@@ -227,11 +234,46 @@ module.exports = (robot) ->
         else
           msg.send "Couldn't get the pid."
 
-  formatted_reponse = (item, resource_path) ->
+  # Get all tasks for a given user story.
+  # Should return a formatted string containing all formatted tasks.
+  # Will be called in succession for a given array of userstories.
+  getTasksForUS = (usid, auth, string) ->
+    usid = usid
+    auth = auth
+    us_words = string
+
+    robot.http(url + '/tasks' + "&user_story=#{usid}")
+      .headers('Content-Type': 'application/json', 'Authorization': auth)
+      .get() (err, res, body) ->
+        tasks_list = JSON.parse body
+        if tasks_list
+          for item in tasks_list
+
+            us_words += "/task:" + item['id'] + " - "
+            us_words += "*" + item['subject'] + "* "
+            us_words += "_" + item['status_extra_info']['name'] + "_ "
+            us_words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
+            if item['description']
+              us_words += "\n"
+              us_words += "_" + item["description"] + "_"
+              us_words += "\n"
+            else
+              us_words += "\n"
+
+            return us_words
+
+        else
+          msg.send "Error getting tasks for usid #{usid}"
+
+
+  formatted_reponse = (item, auth, resource_path) ->
     words = ""
 
     switch resource_path
       when '/userstories'
+
+        usid = item['id']
+        auth = auth
 
         words += "us:" + item['id']
         words += " (" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
@@ -245,6 +287,8 @@ module.exports = (robot) ->
           words += "\n"
         else
           words += "\n"
+
+        words += getTasksForUS(usid, auth, words)
 
       when '/tasks'
 
