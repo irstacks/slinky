@@ -43,8 +43,6 @@
 # Author:
 #   David Burke
 
-require './taiga-config.coffee'
-
 
 module.exports = (robot) ->
 
