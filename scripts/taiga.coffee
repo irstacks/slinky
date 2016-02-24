@@ -171,7 +171,7 @@ module.exports = (robot) ->
   # https://api.taiga.io/api/v1/tasks/by_ref?ref=1&project=1
   robot.hear /taiga (task|tasks) us:(\d+) (list)?/i, (msg) ->
 
-    usref = msg.match[1]
+    usref = msg.match[2]
     project = getProject(msg)
     if not project
       msg.send project_not_set_msg
