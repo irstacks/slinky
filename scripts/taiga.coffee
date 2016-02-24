@@ -220,12 +220,12 @@ module.exports = (robot) ->
               task_list = JSON.parse body
 
               if task_list
-                if task_list.length > 0
-                  say = "Task list for US:#{usref}"
-                  say += formatted_reponse(task, '/tasks') for task in task_list
-                  msg.send say
-                else
-                  msg.send "There are no tasks for US:#{usref}"
+                # if task_list.length > 0
+                say = "Task list for US:#{usref}"
+                say += formatted_reponse(task, '/tasks') for task in task_list
+                msg.send say
+                # else
+                #   msg.send "There are no tasks for US:#{usref}"
 
               else
                 msg.send "Unable to retrieve tasks for userstory w/ id: #{usref}"
@@ -315,7 +315,7 @@ module.exports = (robot) ->
         words += "*" + item['subject'] + "* "
         words += "_" + item['status_extra_info']['name'] + "_ "
 
-        if item['description']
+        if item['description'] is not null
           words += "\n"
           words += "_" + item["description"] + "_"
           words += "\n"
@@ -324,11 +324,11 @@ module.exports = (robot) ->
 
       when '/tasks'
 
-        words += "us:" + (item['user_story'] || "?") + "/task:" + item['ref'] + " - "
+        words += "task:" + item['ref'] + " - "
         words += "*" + item['subject'] + "* "
         words += "_" + item['status_extra_info']['name'] + "_ "
         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
-        if item['description']
+        if item['description'] is not null
           words += "\n"
           words += "_" + item["description"] + "_"
           words += "\n"
