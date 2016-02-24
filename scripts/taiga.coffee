@@ -122,7 +122,7 @@ module.exports = (robot) ->
     auth = "Bearer #{token}"
 
     payload_close_obj = {
-      is_closed: true
+      is_closed: true # maybe there is an issue with stringifying a boolean
     }
     payload_patchable = JSON.stringify payload_close_obj
 
@@ -131,9 +131,11 @@ module.exports = (robot) ->
       .patch(payload_patchable) (err, res, body) ->
         if not err
           closed_resource = JSON.parse body
-          subject_closed = closed_resource['subject']
+          subject_closed = "#{closed_resource['subject']}"
           say = "Closed "
           say += subject_closed
+          msg.send "Res: #{res}"
+
           msg.send say
         else
           msg.send "There was an error closing the resource."
