@@ -202,6 +202,7 @@ module.exports = (robot) ->
           else
             msg.send "Unable to authenticate"
 
+
   getAllResource = (msg, token, projectSlug, resource_path) ->
     data = "?project=#{projectSlug}"
     auth = "Bearer #{token}"
@@ -225,81 +226,13 @@ module.exports = (robot) ->
                 say = "*Open Userstories:*\n" if resource_path is '/userstories'
                 say = "*Open Tasks:*\n" if resource_path is '/tasks'
 
-                # Calls new implementation of getting all tasks for all userstories with getTasksForUS(...)
-                say += formatted_reponse(item, resource_path) for item in response_list if resource_path is '/userstories'
-                msg.send say if resource_path is '/userstories'
-
-                # New path for userstories includes all tasks for each.
-                if resource_path is '/userstories'
-
-                  # For each item in userstories.
-                  for item in response_list
-                    say += formatted_reponse(item, '/userstories')
-                    usid = item['id']
-
-                    robot.http(url + '/tasks' + "&user_story=#{usid}&status_is_closed=false")
-                      .headers('Content-Type': 'application/json', 'Authorization': auth)
-                      .get() (err, res, body) ->
-                        tasks_list = JSON.parse body
-                        if tasks_list
-
-                          # Userstory words.
-                          for task in tasks_list
-                            say +=
-                            say += "/task:" + item['id'] + " - "
-                            say += "*" + item['subject'] + "* "
-                            say += "_" + item['status_extra_info']['name'] + "_ "
-                            say += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
-                            if item['description']
-                              say += "\n"
-                              say += "_" + item["description"] + "_"
-                              say += "\n"
-                            else
-                              say += "\n"
-                        else
-                          msg.send "Error getting tasks for usid #{usid}"
-
-                  msg.send say
+                say += formatted_reponse(item, resource_path) for item in response_list
+                msg.send say
 
               else
                 msg.send "Couldn't get data for project with id #{pid}."
         else
           msg.send "Couldn't get the pid."
-
-
-  # formatTasksForUSList = (item) ->
-  #   task_words = ""
-  #   task_words += "/task:" + item['id'] + " - "
-  #   task_words += "*" + item['subject'] + "* "
-  #   task_words += "_" + item['status_extra_info']['name'] + "_ "
-  #   task_words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
-  #   if item['description']
-  #     task_words += "\n"
-  #     task_words += "_" + item["description"] + "_"
-  #     task_words += "\n"
-  #   else
-  #     task_words += "\n"
-
-  #   return task_words
-
-
-  # Get all tasks for a given user story.
-  # Should return a formatted string containing all formatted tasks which will be appended to words string.
-  # Will be called in succession for a given array of userstories.
-  # getTasksForUS = (usid, auth) ->
-  #   usid = usid
-  #   auth = auth
-  #   task_words_per_item = ""
-
-  #   robot.http(url + '/tasks' + "&user_story=#{usid}")
-  #     .headers('Content-Type': 'application/json', 'Authorization': auth)
-  #     .get() (err, res, body) ->
-  #       tasks_list = JSON.parse body
-  #       if tasks_list
-  #         task_words_per_item = formatTasksForUSList(item) for item in tasks_list
-  #         return task_words_per_item
-  #       else
-  #         msg.send "Error getting tasks for usid #{usid}"
 
 
   formatted_reponse = (item, resource_path) ->
@@ -323,17 +256,6 @@ module.exports = (robot) ->
           words += "\n"
         else
           words += "\n"
-
-        # robot.http(url + '/tasks' + "&user_story=#{usid}")
-        #   .headers('Content-Type': 'application/json', 'Authorization': auth)
-        #   .get() (err, res, body) ->
-        #     tasks_list = JSON.parse body
-        #     if tasks_list
-        #       task_words_per_item = formatTasksForUSList(item) for item in tasks_list
-        #       return task_words_per_item
-        #     else
-        #       msg.send "Error getting tasks for usid #{usid}"
-
 
       when '/tasks'
 
