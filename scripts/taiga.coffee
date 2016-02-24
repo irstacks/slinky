@@ -19,15 +19,12 @@
 #   taiga (us|userstory) - List all open userstories.
 #   taiga (us|userstory) us:34 - List all tasks for userstory by ID.
 #   taiga add (us|userstory) sub:The beginning of long journey desc:The Road goes on.
-#   taiga close (us|userstory):34 - Close task or story by ID.
 #   taiga delete (us|userstory):(id) - Delete task or userstory by ID.
 #
 #   taiga (task|tasks) - List all open tasks.
 #   taiga (task|tasks) us:34 - List all tasks for userstory by ID.
 #   taiga add (task|tasks) (us:34|) sub:Do it. desc:And do it good. - Add task, optionally specifying userstory ID.
-#   taiga close (task|tasks):52 - Close task or story by ID.
 #   taiga delete (task):(id) - Delete task or userstory by ID.
-#
 #
 #
 # Notes:
