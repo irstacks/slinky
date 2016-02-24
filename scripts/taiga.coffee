@@ -281,7 +281,9 @@ module.exports = (robot) ->
             .get() (err, res, body) ->
 
               if not err
-                task_list = JSON.parse body
+                # task_list = JSON.parse body
+                body = JSON.stringify body
+                msg.send body
 
                 if task_list
                   # if task_list.length > 0
