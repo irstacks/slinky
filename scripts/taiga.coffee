@@ -265,10 +265,10 @@ module.exports = (robot) ->
         tasks_list = JSON.parse body
         if tasks_list
           task_words_per_item = formatTasksForUSList(item) for item in tasks_list
+          return task_words_per_item
         else
           msg.send "Error getting tasks for usid #{usid}"
 
-    return task_words_per_item
 
   formatted_reponse = (item, auth, resource_path) ->
     words = ""
@@ -292,7 +292,7 @@ module.exports = (robot) ->
         else
           words += "\n"
 
-        words += getTasksForUS(usid, auth)
+        words += JSON.stringify getTasksForUS(usid, auth)
 
 
       when '/tasks'
