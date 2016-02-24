@@ -235,12 +235,12 @@ module.exports = (robot) ->
           msg.send "Couldn't get the pid."
 
   # Get all tasks for a given user story.
-  # Should return a formatted string containing all formatted tasks.
+  # Should return a formatted string containing all formatted tasks which will be appended to words string.
   # Will be called in succession for a given array of userstories.
-  getTasksForUS = (usid, auth, string) ->
+  getTasksForUS = (usid, auth) ->
     usid = usid
     auth = auth
-    us_words = string
+    task_words = ""
 
     robot.http(url + '/tasks' + "&user_story=#{usid}")
       .headers('Content-Type': 'application/json', 'Authorization': auth)
@@ -249,18 +249,18 @@ module.exports = (robot) ->
         if tasks_list
           for item in tasks_list
 
-            us_words += "/task:" + item['id'] + " - "
-            us_words += "*" + item['subject'] + "* "
-            us_words += "_" + item['status_extra_info']['name'] + "_ "
-            us_words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
+            task_words += "/task:" + item['id'] + " - "
+            task_words += "*" + item['subject'] + "* "
+            task_words += "_" + item['status_extra_info']['name'] + "_ "
+            task_words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
             if item['description']
-              us_words += "\n"
-              us_words += "_" + item["description"] + "_"
-              us_words += "\n"
+              task_words += "\n"
+              task_words += "_" + item["description"] + "_"
+              task_words += "\n"
             else
-              us_words += "\n"
+              task_words += "\n"
 
-            return us_words
+            return task_words
 
         else
           msg.send "Error getting tasks for usid #{usid}"
@@ -288,7 +288,7 @@ module.exports = (robot) ->
         else
           words += "\n"
 
-        words += getTasksForUS(usid, auth, words)
+        words += getTasksForUS(usid, auth)
 
       when '/tasks'
 
