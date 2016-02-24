@@ -210,7 +210,7 @@ module.exports = (robot) ->
         pid = data.project
         if pid
 
-          data = "&user_story=#{usid}" #"/byref?ref=#{usid}&project=#{pid}"
+          data = "&user_story=#{usid}" # "/byref?ref=#{usid}&project=#{pid}"
           auth = "Bearer #{token}"
 
           robot.http(url + 'tasks' + data)
@@ -220,12 +220,12 @@ module.exports = (robot) ->
               task_list = JSON.parse body
 
               if task_list
-                if task_list.length > 0
-                  say = "Task list for US:#{usid}"
-                  say += formatted_reponse(task, '/tasks') for task in task_list
-                  msg.send say
-                else
-                  msg.send "There are no tasks for US:#{usid}"
+                # if task_list.length > 0
+                say = "Task list for US:#{usid}"
+                say += formatted_reponse(task, '/tasks') for task in task_list
+                msg.send say
+                # else
+                #   msg.send "There are no tasks for US:#{usid}"
 
               else
                 msg.send "Unable to retrieve tasks for userstory w/ id: #{usid}"
