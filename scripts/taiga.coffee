@@ -257,7 +257,7 @@ module.exports = (robot) ->
   getTasksForUS = (usid, auth) ->
     usid = usid
     auth = auth
-    task_words = ""
+    task_words_per_item = ""
 
     robot.http(url + '/tasks' + "&user_story=#{usid}")
       .headers('Content-Type': 'application/json', 'Authorization': auth)
@@ -265,10 +265,9 @@ module.exports = (robot) ->
         tasks_list = JSON.parse body
         if tasks_list
           task_words_per_item = formatTasksForUSList(item) for item in tasks_list
+          return task_words_per_item
         else
           msg.send "Error getting tasks for usid #{usid}"
-
-        return task_words_per_item
 
 
   formatted_reponse = (item, auth, resource_path) ->
