@@ -250,17 +250,17 @@ module.exports = (robot) ->
         words += "*" + item['subject'] + "* "
         words += "\n        " + item['description'] + "" if item['description']
         # Link to taiga item.
-        words += "\n#{taiga_tree_url}#{projectSlug}/us/#{item['ref']}"
+        words += "\n#{taiga_tree_url}#{projectSlug}/us/#{item['ref']}\n"
 
       when '/tasks'
         # _New_​ us:554410/task:9 - ​*get separate keys from FB for production and staging*​
         words += "\n_"
         words += "us:" + (item['user_story'] || "??????") + "/task:" + item['ref']
-        words += item['status_extra_info']['name'] + "_ "
+        words += " " + item['status_extra_info']['name'] + "_ "
         words += " - "
         words += "*" + item['subject'] + "* "
         words += "\n        " + item['description'] + "" if item['description']
-        words += "\n#{taiga_tree_url}#{projectSlug}/task/#{item['ref']}"
+        words += "\n#{taiga_tree_url}#{projectSlug}/task/#{item['ref']}\n"
 
     return words
 
