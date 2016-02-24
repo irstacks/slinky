@@ -244,31 +244,21 @@ module.exports = (robot) ->
         usid = item['id']
         auth = auth
 
-        words += "us:" + item['id']
-        words += " (" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
+        words += "\nus:" + item['id']
+        words += " _" + item['status_extra_info']['name'] + "_ "
+        words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
         words += " - "
         words += "*" + item['subject'] + "* "
-        words += "_" + item['status_extra_info']['name'] + "_ "
-
-        if item['description'] is not null
-          words += "\n"
-          words += "    _" + item["description"] + "_"
-          words += "\n"
-        else
-          words += "\n"
+        words += "\n        _" + item["description"] + "_" if item.hasOwnProperty(description)
+        words += "\n"
 
       when '/tasks'
-
-        words += "us:" + (item['user_story'] || "?") + " /task:" + item['ref'] + " - "
+        # _New_​ us:554410/task:9 - ​*get separate keys from FB for production and staging*​
+        words += "\n_" + item['status_extra_info']['name'] + "_ "
+        words += "us:" + (item['user_story'] || "??????") + "/task:" + item['ref']
+        words += " - "
         words += "*" + item['subject'] + "* "
-        words += "_" + item['status_extra_info']['name'] + "_ "
-        words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
-        if item['description'] is not null
-          words += "\n"
-          words += "    _" + item["description"] + "_"
-          words += "\n"
-        else
-          words += "\n"
+        words += "\n        _" + item["description"] + "_" if item.hasOwnProperty(description)
 
     return words
 
