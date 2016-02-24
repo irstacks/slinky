@@ -237,33 +237,33 @@ module.exports = (robot) ->
   # Get all tasks for a given user story.
   # Should return a formatted string containing all formatted tasks which will be appended to words string.
   # Will be called in succession for a given array of userstories.
-  getTasksForUS = (usid, auth) ->
-    usid = usid
-    auth = auth
-    task_words = ""
+  # getTasksForUS = (usid, auth) ->
+  #   usid = usid
+  #   auth = auth
+  #   task_words = ""
 
-    robot.http(url + '/tasks' + "&user_story=#{usid}")
-      .headers('Content-Type': 'application/json', 'Authorization': auth)
-      .get() (err, res, body) ->
-        tasks_list = JSON.parse body
-        if tasks_list
-          for item in tasks_list
+  #   robot.http(url + '/tasks' + "&user_story=#{usid}")
+  #     .headers('Content-Type': 'application/json', 'Authorization': auth)
+  #     .get() (err, res, body) ->
+  #       tasks_list = JSON.parse body
+  #       if tasks_list
+  #         for item in tasks_list
 
-            task_words += "/task:" + item['id'] + " - "
-            task_words += "*" + item['subject'] + "* "
-            task_words += "_" + item['status_extra_info']['name'] + "_ "
-            task_words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
-            if item['description']
-              task_words += "\n"
-              task_words += "_" + item["description"] + "_"
-              task_words += "\n"
-            else
-              task_words += "\n"
+  #           task_words += "/task:" + item['id'] + " - "
+  #           task_words += "*" + item['subject'] + "* "
+  #           task_words += "_" + item['status_extra_info']['name'] + "_ "
+  #           task_words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
+  #           if item['description']
+  #             task_words += "\n"
+  #             task_words += "_" + item["description"] + "_"
+  #             task_words += "\n"
+  #           else
+  #             task_words += "\n"
 
-            return task_words
+  #           return task_words
 
-        else
-          msg.send "Error getting tasks for usid #{usid}"
+  #       else
+  #         msg.send "Error getting tasks for usid #{usid}"
 
 
   formatted_reponse = (item, auth, resource_path) ->
@@ -288,7 +288,26 @@ module.exports = (robot) ->
         else
           words += "\n"
 
-        words += getTasksForUS(usid, auth)
+        robot.http(url + '/tasks' + "&user_story=#{usid}")
+          .headers('Content-Type': 'application/json', 'Authorization': auth)
+          .get() (err, res, body) ->
+            tasks_list = JSON.parse body
+            if tasks_list
+              for item in tasks_list
+
+                words += "/task:" + item['id'] + " - "
+                words += "*" + item['subject'] + "* "
+                words += "_" + item['status_extra_info']['name'] + "_ "
+                words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
+                if item['description']
+                  words += "\n"
+                  words += "_" + item["description"] + "_"
+                  words += "\n"
+                else
+                  words += "\n"
+
+            else
+              msg.send "Error getting tasks for usid #{usid}"
 
       when '/tasks'
 
