@@ -163,7 +163,7 @@ module.exports = (robot) ->
 
 
   # Get all tasks or userstories.
-  robot.hear /taiga (us|userstory|userstories|task|tasks)/i, (msg) ->
+  robot.hear /taiga (us|userstory|userstories|task|tasks)$/i, (msg) ->
     project = getProject(msg)
     if not project
       msg.send project_not_set_msg
