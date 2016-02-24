@@ -242,8 +242,8 @@ module.exports = (robot) ->
       when '/userstories'
 
         # Make link?
-        words += "<#{taiga_tree_url}#{projectSlug}/us/#{item['ref']}|"
-        words += "\nus:" + item['ref'] + ">"
+        words += "\n<#{taiga_tree_url}#{projectSlug}/us/#{item['ref']}|"
+        words += "us:" + item['ref'] + ">"
         words += " _" + item['status_extra_info']['name'] + "_ "
         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
         words += " - "
