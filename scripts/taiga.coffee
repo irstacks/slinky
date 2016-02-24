@@ -14,7 +14,7 @@
 #   taiga info - Displays infomation about Taiga connection for user
 #   taiga project <project-slug> - Set taiga project for this channel
 #   taiga auth <username> <password> - Authenticate so that comments from from this user
-#   TG-<REF> <comment> - Send a comment to Taiga. Example `TG-123 I left a comment!` and `TG-123 #done I finished it, I am the best.`
+#   taiga-<REF> <comment> - Send a comment to Taiga. Example `TG-123 I left a comment!` and `TG-123 #done I finished it, I am the best.`
 #
 #   taiga (us|userstory) - List all open userstories.
 #   taiga (us|userstory) us:34 - List all tasks for userstory by ID.
@@ -81,68 +81,68 @@ module.exports = (robot) ->
     project_key + room
 
 
-########################### PATCH
-# Close a story or task.
+# ########################### PATCH
+# # Close a story or task.
 
-  robot.hear /taiga close (us|userstory|task):(\d+)/i, (msg) ->
-    resource_type = msg.match[1]
-    rid = msg.match[2]
-    if not rid
-      msg.send "But you've to specify an ID."
-      return
+#   robot.hear /taiga close (us|userstory|task):(\d+)/i, (msg) ->
+#     resource_type = msg.match[1]
+#     rid = msg.match[2]
+#     if not rid
+#       msg.send "But you've to specify an ID."
+#       return
 
-    switch resource_type
-      when 'us','userstory'
-        resource_path = 'userstories'
-      when 'task'
-        resource_path = 'tasks'
+#     switch resource_type
+#       when 'us','userstory'
+#         resource_path = 'userstories'
+#       when 'task'
+#         resource_path = 'tasks'
 
-    token = getUserToken(msg)
+#     token = getUserToken(msg)
 
-    if token
-      closeResource(msg, token, resource_path, rid)
-    else
-      data = JSON.stringify({
-        type: "normal",
-        username: username,
-        password: password
-      })
-      robot.http(url + 'auth')
-        .headers('Content-Type': 'application/json')
-        .post(data) (err, res, body) ->
-          data = JSON.parse body
-          token = data.auth_token
-          if token
-            closeResource(msg, token, resource_path, rid)
-          else
-            msg.send "Unable to authenticate"
+#     if token
+#       closeResource(msg, token, resource_path, rid)
+#     else
+#       data = JSON.stringify({
+#         type: "normal",
+#         username: username,
+#         password: password
+#       })
+#       robot.http(url + 'auth')
+#         .headers('Content-Type': 'application/json')
+#         .post(data) (err, res, body) ->
+#           data = JSON.parse body
+#           token = data.auth_token
+#           if token
+#             closeResource(msg, token, resource_path, rid)
+#           else
+#             msg.send "Unable to authenticate"
 
-  closeResource = (msg, token, resource_path, rid) ->
-    data = "#{resource_path}/#{rid}"
-    auth = "Bearer #{token}"
+#   closeResource = (msg, token, resource_path, rid) ->
+#     data = "#{resource_path}/#{rid}"
+#     auth = "Bearer #{token}"
 
-    payload_close_obj = {
-      is_closed: true # maybe there is an issue with stringifying a boolean
-    }
-    payload_patchable = JSON.stringify payload_close_obj
+#     payload_close_obj = {
+#       is_closed: true # maybe there is an issue with stringifying a boolean
+#     }
+#     payload_patchable = JSON.stringify payload_close_obj
 
-    robot.http(url + data)
-      .headers('Content-Type': 'application/json', 'Authorization': auth)
-      .patch(payload_patchable) (err, res, body) ->
-        if res
-          status_code = res.statusCode
-          msg.send "Res: #{status_code}"
-        if body
-          closed_resource = JSON.parse body
-          closed_resource_json = JSON.stringify body
-          msg.send "body_json: #{closed_resource_json}"
-          subject = closed_resource['subject']
-          subject_closed = "#{subject}"
-          say = "Closed "
-          say += subject_closed
-          msg.send say
-        if err
-          msg.send "There was an error closing the resource: #{err}"
+#     robot.http(url + data)
+#       .headers('Content-Type': 'application/json', 'Authorization': auth)
+#       .patch(payload_patchable) (err, res, body) ->
+#         if res
+#           status_code = res.statusCode
+#           msg.send "Res: #{status_code}"
+#         if body
+#           closed_resource = JSON.parse body
+#           closed_resource_json = JSON.stringify body
+#           msg.send "body_json: #{closed_resource_json}"
+#           subject = closed_resource['subject']
+#           subject_closed = "#{subject}"
+#           say = "Closed "
+#           say += subject_closed
+#           msg.send say
+#         if err
+#           msg.send "There was an error closing the resource: #{err}"
 
 
 ########################### DELETE
@@ -426,6 +426,7 @@ module.exports = (robot) ->
 
         words += "\n"
         words += "us:" + item['id']
+        words += " #" + item['ref']
         words += " _" + item['status_extra_info']['name'] + "_ "
         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
         words += " - "
@@ -438,6 +439,7 @@ module.exports = (robot) ->
 
         words += "\n_"
         words += "us:" + (item['user_story'] || "??????") + "/task:" + item['id']
+        words += " #" + item['ref']
         words += " " + item['status_extra_info']['name'] + "_ "
         words += " - "
         words += "*" + item['subject'] + "* "
@@ -497,7 +499,7 @@ module.exports = (robot) ->
           msg.send "Authentication Failed"
 
 
-  robot.hear /TG-(\d*) (.*)/i, (msg) ->
+  robot.hear /taiga-(\d*) (.*)/i, (msg) ->
     project = getProject(msg)
     if not project
       msg.send project_not_set_msg
