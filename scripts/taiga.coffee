@@ -226,7 +226,7 @@ module.exports = (robot) ->
                 say = "*Open Userstories:*\n" if resource_path is '/userstories'
                 say = "*Open Tasks:*\n" if resource_path is '/tasks'
 
-                say += formatted_reponse(item, resource_path) for item in response_list
+                say += formatted_reponse(item, projectSlug, resource_path) for item in response_list
                 msg.send say
 
               else
@@ -235,14 +235,14 @@ module.exports = (robot) ->
           msg.send "Couldn't get the pid."
 
 
-  formatted_reponse = (item, resource_path) ->
+  formatted_reponse = (item, projectSlug, resource_path) ->
     words = ""
 
     switch resource_path
       when '/userstories'
 
         # Make link?
-        words += "<#{taiga_tree_url}#{getProject(msg)}/us/#{item['ref']}|"
+        words += "<#{taiga_tree_url}#{projectSlug}/us/#{item['ref']}|"
         words += "\nus:" + item['ref'] + ">"
         words += " _" + item['status_extra_info']['name'] + "_ "
         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
