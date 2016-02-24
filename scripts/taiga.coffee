@@ -311,7 +311,7 @@ module.exports = (robot) ->
 
         # Make link?
         words += "\n"
-        words += "us:" + item['ref']
+        words += "us:" + item['id']
         words += " _" + item['status_extra_info']['name'] + "_ "
         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
         words += " - "
