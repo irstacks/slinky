@@ -129,16 +129,21 @@ module.exports = (robot) ->
     robot.http(url + data)
       .headers('Content-Type': 'application/json', 'Authorization': auth)
       .patch(payload_patchable) (err, res, body) ->
-        if not err
+        if res
+          res_json = JSON.stringify res
+          msg.send "Res: #{res_json}"
+        if body
           closed_resource = JSON.parse body
-          subject_closed = "#{closed_resource['subject']}"
+          closed_resource_json = JSON.stringify body
+          msg.send "body_json: #{closed_resource_json}"
+          subject = closed_resource['subject']
+          subject_closed = "#{subject}"
           say = "Closed "
           say += subject_closed
-          msg.send "Res: #{res}"
-
           msg.send say
-        else
-          msg.send "There was an error closing the resource."
+        if err
+          msg.send "There was an error closing the resource: #{err}"
+
 
 ########################### DELETE
 
