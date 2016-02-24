@@ -200,9 +200,12 @@ module.exports = (robot) ->
       .get() (err, res, body) ->
         task_list = JSON.parse body
         if task_list
-          say = "Task list for US:#{usid}"
-          say += formatted_reponse(task, '/tasks') for task in task_list
-          msg.send say
+          if task_list.length > 0
+            say = "Task list for US:#{usid}"
+            say += formatted_reponse(task, '/tasks') for task in task_list
+            msg.send say
+          else
+            msg.send "There are no tasks for US:#{usid}"
 
         else
           msg.send "Unable to retrieve tasks for userstory w/ id: #{usid}"
