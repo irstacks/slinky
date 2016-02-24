@@ -273,25 +273,32 @@ module.exports = (robot) ->
         pid = data.project
         if pid
 
-          data = "&user_story=#{usid}&status_is_closed=false" # "/"
+          data = "&user_story=#{usid}&status__is_closed=false" # "/"
           auth = "Bearer #{token}"
 
           robot.http(url + 'tasks' + data)
             .headers('Content-Type': 'application/json', 'Authorization': auth)
             .get() (err, res, body) ->
 
-              task_list = JSON.parse body
+              if not err
+                task_list = JSON.parse body
 
-              if task_list
-                # if task_list.length > 0
-                say = "Task list for US:#{usid}"
-                say += formatted_reponse(task, projectSlug, '/tasks') for task in task_list
+                if task_list
+                  # if task_list.length > 0
+                  say = "Task list for US:#{usid}"
+                  say += formatted_reponse(task, projectSlug, '/tasks') for task in task_list
+                  msg.send say
+                  # else
+                  #   msg.send "There are no tasks for US:#{usid}"
+
+                else
+                  msg.send "Unable to retrieve tasks for userstory w/ id: #{usid}"
+
+              # There was an err.
+              else if err
+                say = "There was an error: "
+                say += "#{err}"
                 msg.send say
-                # else
-                #   msg.send "There are no tasks for US:#{usid}"
-
-              else
-                msg.send "Unable to retrieve tasks for userstory w/ id: #{usid}"
 
 
   formatted_reponse = (item, projectSlug, resource_path) ->
