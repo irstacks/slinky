@@ -266,7 +266,10 @@ module.exports = (robot) ->
               if err or not reference.id
                 msg.send "Failed to create the resource."
               else
-                msg.send "Created *#{payload['subject']}*\n#{taiga_tree_url}#{getProject(msg)}/#{gettable_url}/#{reference.ref}"
+                switch gettable_url
+                  when 'us' then typer = "userstory"
+                  when 'tasks' then typer = "task"
+                msg.send "Created #{typer} *#{payload['subject']}*\n#{taiga_tree_url}#{getProject(msg)}/#{gettable_url}/#{reference.ref}"
         else
           msg.send "Couldn't get the pid."
 
@@ -629,4 +632,4 @@ module.exports = (robot) ->
         if err or not reference.id
           msg.send "Failed to update #{type}"
         else
-          msg.send "Success. Status for #{type} ##{reference.ref} is #{statusSlug}"
+          msg.send "Comment added. Status for #{type} ##{reference.ref} is #{statusSlug}"
