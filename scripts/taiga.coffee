@@ -16,7 +16,7 @@
 #   taiga (task|tasks) us:<ID> - List all tasks for userstory by ID, e.g. taiga tasks us:553311
 #   taiga auth <username> <password> - Authenticate so that comments from from this user
 #   taiga create (us|userstory) sub:The beginning of long journey desc:The Road goes on.
-#   taiga create (task|tasks) (us:553311|) sub:Do it. desc:And do it good. - Add task, optionally specifying userstory ID.
+#   taiga create (task|tasks) (us:553311|) subj:Do it. desc:And do it good. - Add task, optionally specifying userstory ID.
 #   taiga delete (us|userstory|task):(id) - Delete task or userstory by ID.
 #   taiga info - Displays infomation about Taiga connection for user
 #   taiga project <project-slug> - Set taiga project for this channel
@@ -127,7 +127,7 @@ module.exports = (robot) ->
   # Post a task or userstory.
   # If posting a task, us:<id> is optional.
   # Argument order is not optional.
-  robot.hear /taiga create (us|userstory|userstories|task|tasks)( us\:(\d+))? (sub:(.*)) (desc:(.*))/i, (msg) ->
+  robot.hear /taiga create (us|userstory|userstories|task|tasks)( us\:(\d+))? (subj:(.*)) (desc:(.*))/i, (msg) ->
     resource_type = msg.match[1]
     incoming_us = msg.match[3]
     incoming_subject = msg.match[5]
