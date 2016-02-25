@@ -2,7 +2,7 @@
 #   Send Taiga.io commands via hubot
 #
 # Dependencies:
-#   "hubot-taiga": "0.1"
+#   none
 #
 # Configuration:
 #   HUBOT_TAIGA_USERNAME
@@ -34,7 +34,7 @@
 #   Otherwise use `taiga project <project-slug>` to set the project per channel
 #
 # Author:
-#   David Burke
+#   Mostly David Burke and some Isaac
 
 
 module.exports = (robot) ->
