@@ -47,23 +47,10 @@ images = [
   "http://i.imgur.com/L2SZuzG.gif"
 ]
 
-Inhibitions = require './homunculus.coffee'
+# Homunculus = require './homunculus.coffee'
 
 module.exports = (robot) ->
 
-  pep = robot.brain.get('pep')
-
-  # inhibitions = (importanceBias) ->
-  #   peppiness_level = parseFloat(robot.brain.get('pep'))
-  #   calculated_pep = peppiness_level/150.0*importanceBias
-  #   rand = Math.random()
-  #   if rand < calculated_pep # ie 50/100 * .8
-  #     # console.log "Chances were " + rand + "would be < " + calculated_pep
-  #     return true
-  #   else
-  #     return false
-
-
-  robot.hear /\bso[o]+n\b/i, (msg) ->
-    if Inhibitions(pep, 0.6)
-      msg.send msg.random images
+  robot.hear /\bso[o]+n\b/i, (res) ->
+    if robot.inhibitions(res, 0.6)
+      res.send res.random images
