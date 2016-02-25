@@ -2,7 +2,7 @@ module.exports = (robot) ->
 
   getPep = (res) ->
     pep = robot.brain.get('pep')
-    if not pep
+    if pep is undefined
       res.send "You've got to set my pep level!"
       return
     else
