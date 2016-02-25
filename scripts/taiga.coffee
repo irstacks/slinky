@@ -195,7 +195,7 @@ module.exports = (robot) ->
   # Post a task or userstory.
   # If posting a task, us:<id> is optional.
   # Argument order is not optional.
-  robot.hear /taiga create (us|userstory|userstories|task|tasks) (us\:(\d+))? (sub:(.*)) (desc:(.*))/i, (msg) ->
+  robot.hear /taiga create (us|userstory|userstories|task|tasks)( us\:(\d+))? (sub:(.*)) (desc:(.*))/i, (msg) ->
     resource_type = msg.match[1]
     incoming_us = msg.match[3]
     incoming_subject = msg.match[5]
