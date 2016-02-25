@@ -363,7 +363,7 @@ module.exports = (robot) ->
         words += "(" + item['assigned_to_extra_info']['full_name_display'] + ")" if item['assigned_to_extra_info']
         words += " - "
         words += "*" + item['subject'] + "* "
-        words += "\n        " + item['description'] + "" if item['description']
+        words += "\n_" + item['description'] + "_" if item['description']
         # Link to taiga item.
         words += "\n#{taiga_tree_url}#{projectSlug}/us/#{item['ref']}\n"
 
@@ -375,7 +375,7 @@ module.exports = (robot) ->
         words += " " + item['status_extra_info']['name'] + "_ "
         words += " - "
         words += "*" + item['subject'] + "* "
-        words += "\n        " + item['description'] + "" if item['description']
+        words += "\n_" + item['description'] + "_" if item['description']
         words += "\n#{taiga_tree_url}#{projectSlug}/task/#{item['ref']}\n"
 
     return words

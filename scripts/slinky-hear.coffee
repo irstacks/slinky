@@ -20,9 +20,9 @@
 # Author:
 #   Mr. Is <isaac.ardis@gmail.com>
 
+Inhibitions = require './homunculus.coffee'
 feelings = require './data/feelings.json'
 vocab = require './data/vocabulary.json'
-
 staging_url = process.env.HUBOT_STAGING_URL
 
 getNickNames = (username) ->
@@ -39,26 +39,19 @@ getNickNames = (username) ->
 directedTowardSlinky = (attitude) ->
   return new RegExp '^(?=.*?(' + vocab[attitude].join('|') + '))(?=.*?(slinky)).*$', 'gi'
 
+
 module.exports = (robot) ->
 
-  inhibitions = (importanceBias) ->
-    peppiness_level = parseFloat(robot.brain.get('pep'))
-    calculated_pep = peppiness_level/100.0*importanceBias
-    rand = Math.random()
-    if rand < calculated_pep # ie 50/100 * .8
-      # console.log "Chances were " + rand + "would be < " + calculated_pep
-      return true
-    else
-      return false
+  pep = robot.brain.get('pep')
 
   # Likes explosions.
   robot.hear /(to|on|for) production/i, (res) ->
-    if inhibitions(1) # 1: important, 0: not important
+    if Inhibitions(pep, 1) # 1: important, 0: not important
       res.send res.random feelings.on_launching_things
 
   # Likes failure.
   robot.hear /(to|on|for) staging/i, (res) ->
-    if inhibitions(1)
+    if Inhibitions(pep, 1)
       res.send res.random [
         "Pomp pomp! Git er up!\n#{staging_url}",
         "Woooooooeeeeey! Staging is awesome. Go there.\n#{staging_url}",
@@ -68,32 +61,32 @@ module.exports = (robot) ->
 
   # Is hungry.
   robot.hear /pie/i, (res) ->
-    if inhibitions(0.8)
+    if Inhibitions(pep, 0.8)
       res.send "I like cake."
 
   # Is truthful.
   robot.hear /badger/i, (res) ->
-    if inhibitions(0.8)
+    if Inhibitions(pep, 0.8)
       res.send "Badgers? BADGERS? WE DON'T NEED NO STINKIN BADGERS"
 
   # Is an addict.
   robot.hear /coffee|espresso|latte/i, (res) ->
-    if inhibitions(0.6)
+    if Inhibitions(pep, 0.4)
       res.send res.random feelings.on_coffee
 
   # Is not a spy.
   robot.hear /bug|bugs/i, (res) ->
-    if inhibitions(0.8)
+    if Inhibitions(pep, 0.6)
       res.send "Bugs? Haha, suckas!"
 
   # Is an antichrist. I mean anarchist.
   robot.hear /government|gov|legal|law|laws/i, (res) ->
-    if inhibitions(0.8)
+    if Inhibitions(pep, 0.6)
       res.send res.random feelings.on_government
 
   # Represents.
   robot.hear /robot|bot|bastard|computer|wires|tubes/i, (res) ->
-    if inhibitions(0.7)
+    if Inhibitions(pep, 0.5)
       res.send res.random feelings.on_robots
 
   # Is sassy.
@@ -101,41 +94,41 @@ module.exports = (robot) ->
   #   res.reply res.random feelings.on_being_quiet
 
   robot.hear directedTowardSlinky('negative'), (res) ->
-    if inhibitions(0.8)
+    if Inhibitions(pep, 0.7)
       res.reply res.random feelings.on_self_negative
 
   robot.hear directedTowardSlinky('mean'), (res) ->
-    if inhibitions(0.8)
+    if Inhibitions(pep, 0.8)
       res.reply res.random feelings.on_being_insulted
 
   # Is a nazi.
   robot.hear /(0.+(n't\b)|.+(\bno\b)|.+(\bnone\b)|.+(\bnot\b)|.+(\bno)){2,}/i, (res) ->
-    if inhibitions(0.5)
+    if Inhibitions(pep, 0.3)
       res.send res.random feelings.on_the_double_negative
 
   # Is a passive aggressive optimistic nazi, sometimes.
   robot.hear /can\'t|cant|won\'t|wont|not|isn\'t|isnt|impossible|wouldn\'t|wouldnt/i, (res) ->
-    if inhibitions(0.2)
+    if Inhibitions(pep, 0.1)
       res.send res.random feelings.on_the_general_negative
 
   # Is firmly pro checks.
   robot.hear /check/i, (res) ->
-    if inhibitions(0.5)
+    if Inhibitions(pep, 0.3)
       res.send res.random feelings.on_checks
 
   # Is horny.
   robot.hear /update|updates|updated|date/i, (res) ->
-    if inhibitions(0.7)
+    if Inhibitions(pep, 0.5)
       res.send res.random feelings.on_dates
 
   # Is gracious.
   robot.hear /thanks slinky/i, (res) ->
-    if inhibitions(1)
+    if Inhibitions(pep, 1)
       res.send res.random feelings.on_gratitude
 
   # Likes to be petted.
   robot.hear /good (0.*) slinky/i, (res) ->
-    if inhibitions(0.8)
+    if Inhibitions(pep, 0.8)
       res.send res.random [
         "Thanks, #{getNickNames(res.message.user.name)}!",
         "You got it.",
@@ -145,32 +138,32 @@ module.exports = (robot) ->
 
   # Does not like to work.
   robot.hear /work|working on|works/i, (res) ->
-    if inhibitions(0.3)
+    if Inhibitions(pep, 0.15)
       res.send res.random feelings.on_work
 
   # Is not a congregationalist.
   robot.hear /meeting|meetings/i, (res) ->
-    if inhibitions(0.9)
+    if Inhibitions(pep, 0.7)
       res.send res.random feelings.on_meetings
 
   # Is a techie.
   robot.hear /app|apps/i, (res) ->
-    if inhibitions(0.5)
+    if Inhibitions(pep, 0.3)
       res.send res.random feelings.on_apps
 
   # Is fast.
   robot.hear /asap/i, (res) ->
-    if inhibitions(0.8)
+    if Inhibitions(pep, 0.6)
       res.send res.random feelings.on_asap
 
   # Is thirsty.
-  robot.hear /drink(|s)|beverage(|s)|bev(y|ies)|beer|shot(|s)|whiskey/i, (res) ->
-    if inhibitions(0.9)
+  robot.hear /drink(|s)|beverage(|s)|bev(y|ies)|beer|whiskey/i, (res) ->
+    if Inhibitions(pep, 0.7)
       res.send res.random feelings.on_drinks
 
   # Is snooty.
   robot.hear /java|ruby|css|scss|python|html|angular|js|javascript/i, (res) ->
-    if inhibitions(0.7)
+    if Inhibitions(pep, 0.5)
       feelings_on_computer_languages = [
         "#{res.message.text} is nothing compared to the magic of a real language.",
         "Personally, I find #{res.message.text} a little outdated at this point.",
@@ -182,16 +175,9 @@ module.exports = (robot) ->
 
   # Is an encouraging meme freak.
   robot.hear /^(alright)/i, (res) ->
-    if inhibitions(0.4)
+    if Inhibitions(pep, 0.2)
       res.send res.random feelings.on_alright
 
   robot.hear /^(ok)/i, (res) ->
-    if inhibitions(0.4)
+    if Inhibitions(pep, 0.2)
       res.send res.random feelings.on_ok
-
-  robot.hear /cheese/i, (res) ->
-    if inhibitions(0.6)
-      res.send res.random ["Goat cheese is my favorite.", "I prefer the mighty goat cheese.", "I love goat cheese man"]
-
-
-

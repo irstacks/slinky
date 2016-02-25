@@ -1,17 +1,10 @@
 # Is a heckler.
+Inhibitions = require './homunculus.coffee'
 heckles = require './data/heckles.json'
 
 module.exports = (robot) ->
 
-  inhibitions = (importanceBias) ->
-    peppiness_level = parseFloat(robot.brain.get('pep'))
-    calculated_pep = peppiness_level/100.0*importanceBias
-    rand = Math.random()
-    if rand < calculated_pep # ie 50/100 * .8
-      # console.log "Chances were " + rand + "would be < " + calculated_pep
-      return true
-    else
-      return false
+  pep = robot.brain.get('pep')
 
   # Heckles teammates.
   # robot.listen(
@@ -23,7 +16,7 @@ module.exports = (robot) ->
   #     response.send response.random heckles["#{response.user.name}"]
   # )
   robot.hear /.*/i, (res) ->
-    if inhibitions(0.1)
+    if Inhibitions(pep, 0.1)
       res.reply res.random heckles["#{res.message.user.name.toLowerCase()}"]
 
   # Heckles speechifying.
@@ -36,14 +29,14 @@ module.exports = (robot) ->
   #     response.send response.random heckles.loquacious_people
   # )
   robot.hear /.*/i, (res) ->
-    if res.message.text.length > 200 and inhibitions(0.3)
+    if res.message.text.length > 200 and Inhibitions(pep, 0.3)
       res.send res.random heckles.loquacious_people
 
   # Heckles at liberty.
   robot.listen(
     (message) -> # Match function
       # Occassionally respond to things that Steve says
-      inhibitions(0.05)
+      Inhibitions(pep, 0.05)
     (response) -> # Standard listener callback
       # Let Steve know how happy you are that he exists
       response.reply response.random heckles.willy_nilly
