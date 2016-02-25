@@ -11,20 +11,15 @@
 #   HUBOT_TAIGA_URL
 #
 # Commands:
+#   taiga-<REF> <comment> - Create a comment. Example `TG-123 I left a comment!` and `TG-123 #done I finished it, I am the best.`
+#   taiga (us|userstory|userstories|task|tasks) - List all open userstories or tasks.
+#   taiga (task|tasks) us:<ID> - List all tasks for userstory by ID, e.g. taiga tasks us:553311
+#   taiga auth <username> <password> - Authenticate so that comments from from this user
+#   taiga create (us|userstory) sub:The beginning of long journey desc:The Road goes on.
+#   taiga create (task|tasks) (us:553311|) sub:Do it. desc:And do it good. - Add task, optionally specifying userstory ID.
+#   taiga delete (us|userstory|task):(id) - Delete task or userstory by ID.
 #   taiga info - Displays infomation about Taiga connection for user
 #   taiga project <project-slug> - Set taiga project for this channel
-#   taiga auth <username> <password> - Authenticate so that comments from from this user
-#   taiga-<REF> <comment> - Send a comment to Taiga. Example `TG-123 I left a comment!` and `TG-123 #done I finished it, I am the best.`
-#
-#   taiga (us|userstory) - List all open userstories.
-#   taiga (us|userstory) us:34 - List all tasks for userstory by ID.
-#   taiga create (us|userstory) sub:The beginning of long journey desc:The Road goes on.
-#   taiga delete (us|userstory):(id) - Delete task or userstory by ID.
-#
-#   taiga (task|tasks) - List all open tasks.
-#   taiga (task|tasks) us:34 - List all tasks for userstory by ID.
-#   taiga create (task|tasks) (us:34|) sub:Do it. desc:And do it good. - Add task, optionally specifying userstory ID.
-#   taiga delete (task):(id) - Delete task or userstory by ID.
 #
 #
 # Notes:
@@ -347,7 +342,7 @@ module.exports = (robot) ->
   # Get all tasks for specific userstory.
   # Now accepting US:id.
   # https://api.taiga.io/api/v1/tasks/by_ref?ref=1&project=1
-  robot.hear /taiga (us|userstory|userstories|task|tasks) us:(\d+)/i, (msg) ->
+  robot.hear /taiga (task|tasks) us:(\d+)/i, (msg) ->
 
     usid = msg.match[2]
     project = getProject(msg)
