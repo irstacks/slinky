@@ -100,7 +100,8 @@ module.exports = (robot) ->
   factoids = new Factoids robot
 
   # Chimes in if he knows the answer to a key question.
-  robot.hear /(.+)\?/i, (msg) ->
+  # But not if he's being smart.
+  robot.hear /^[^,](.+)\?/i, (msg) ->
     factoid = factoids.get msg.match[1]
     if factoid
       msg.reply msg.match[1] + " is " + factoid
