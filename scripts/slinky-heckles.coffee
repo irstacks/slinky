@@ -25,6 +25,6 @@ module.exports = (robot) ->
   # Heckles at liberty.
   robot.hear /.*/i, (res) ->
     if robot.inhibitions(res, 0.05)
-      res.reply response.random heckles.willy_nilly
+      res.reply res.random heckles.willy_nilly
 
 
