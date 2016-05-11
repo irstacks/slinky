@@ -1,4 +1,5 @@
 # Slinky
+
 A real mensch, that [Hubot](https://hubot.github.com)
 
 ## [Uses Slack.](https://github.com/irstacks/slinky/blob/master/package.json)
@@ -24,8 +25,10 @@ A real mensch, that [Hubot](https://hubot.github.com)
 5. `heroku addons:create rediscloud:30`
 6. `heroku config add:HEROKU_URL=https://slinky-house.herokuapp.com`
 7. `heroku config:add HUBOT_SLACK_TOKEN=asdfasdfasdfasdfasdfadsf`
+12. `heroku config:add TZ="America/New_York"`
 8. `heroku config:add HUBOT_HEROKU_KEEPALIVE_URL=https://slinky-house.herokuapp.com`
 9. `heroku config:add HUBOT_HEROKU_SLEEP_TIME=23:59`
 10. `heroku config:add HUBOT_HEROKU_WAKEUP_TIME=07:30`
 11. `heroku addons:create scheduler:standard` and follow curl and timezone directions and whatnot as per the [heroku-keepalive repo](https://github.com/hubot-scripts/hubot-heroku-keepalive) so that your slinky will actually wake up in the morning
 11. ... and other env vars if you want to use twitter, taiga, etc.
+
